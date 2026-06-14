@@ -1,0 +1,70 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: true
+publish_mode: editorial_workflow
+media_folder: assets/images/uploads
+public_folder: /assets/images/uploads
+site_url: https://strategicmarketingadvisors.com
+display_url: https://strategicmarketingadvisors.com
+logo_url: /assets/logo.svg
+
+collections:
+  - name: articles
+    label: Articles
+    label_singular: Article
+    folder: content/articles
+    create: true
+    delete: true
+    extension: json
+    format: json
+    identifier_field: title
+    slug: "{{slug}}"
+    summary: "{{title}} · {{category}} · {{date}}"
+    sortable_fields: [date, title, category]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: URL slug, name: slug, widget: string, hint: "Lowercase words separated by hyphens." }
+      - { label: SEO description, name: description, widget: text }
+      - { label: Card summary, name: summary, widget: text }
+      - label: Category
+        name: category
+        widget: select
+        options: [mindset, strategies, tactics]
+      - { label: Read time, name: readTime, widget: string, default: "5 min read" }
+      - { label: Publish date, name: date, widget: datetime, date_format: YYYY-MM-DD, time_format: false, format: YYYY-MM-DD }
+      - { label: Author, name: author, widget: string, default: "Mary Eule Scarborough" }
+      - { label: Author image, name: authorImage, widget: image, default: "../assets/images/mary.jpg" }
+      - { label: Article hero image, name: heroImage, widget: image }
+      - { label: Resource card image, name: cardImage, widget: image }
+      - { label: Article body, name: body, widget: markdown }
+
+  - name: main_pages
+    label: Main Pages
+    files:
+      - label: Home
+        name: home
+        file: index.html
+        format: raw
+        fields: [{ label: Page HTML, name: body, widget: code, default_language: html, output_code_only: true }]
+      - label: About
+        name: about
+        file: about.html
+        format: raw
+        fields: [{ label: Page HTML, name: body, widget: code, default_language: html, output_code_only: true }]
+      - label: Services
+        name: services
+        file: services.html
+        format: raw
+        fields: [{ label: Page HTML, name: body, widget: code, default_language: html, output_code_only: true }]
+      - label: Resources
+        name: resources
+        file: resources.html
+        format: raw
+        fields: [{ label: Page HTML, name: body, widget: code, default_language: html, output_code_only: true }]
+      - label: Contact
+        name: contact
+        file: contact.html
+        format: raw
+        fields: [{ label: Page HTML, name: body, widget: code, default_language: html, output_code_only: true }]

@@ -1,0 +1,17 @@
+{
+  "name": "strategic-marketing-advisors",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "content:migrate": "node scripts/migrate-content.mjs",
+    "content:expand": "node scripts/expand-articles.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check-links.mjs",
+    "test": "npm run build && npm run check",
+    "dev": "npx serve . -l 3000"
+  },
+  "dependencies": {
+    "cheerio": "^1.1.0"
+  }
+}

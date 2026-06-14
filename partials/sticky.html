@@ -1,0 +1,29 @@
+<!-- Live chat widget --><html><head><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"></head><body><button class="chat-launch" id="chatLaunch" aria-label="Open live chat">
+  <span class="chat-launch__ic"><svg class="icon"><use href="#i-chat"></use></svg><span class="chat-launch__dot"></span></span>
+  <span class="chat-launch__label">Chat with us</span>
+</button>
+<aside class="chat-panel" id="chatPanel" role="dialog" aria-label="Live chat" aria-modal="false">
+  <div class="chat-head">
+    <button class="chat-close" id="chatClose" aria-label="Close chat"><svg class="icon"><use href="#i-close"></use></svg></button>
+    <div class="chat-head__row">
+      <div class="chat-head__av">
+        <img src="@@/assets/images/mary.jpg" alt="Mary">
+        <img src="@@/assets/images/david.jpg" alt="David">
+      </div>
+      <div>
+        <h4>Chat with SMA</h4>
+        <div class="chat-head__status">We typically reply within an hour</div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-body" id="chatBody" aria-live="polite"></div>
+  <div class="chat-foot">
+    <form class="chat-inputrow" id="chatForm">
+      <input class="chat-input" id="chatInput" type="text" placeholder="Type your message…" autocomplete="off">
+      <button class="chat-send" type="submit" aria-label="Send message"><svg class="icon"><use href="#i-send"></use></svg></button>
+    </form>
+    <p class="chat-foot__legal">Prefer to talk? Call <a href="tel:+18773558745">877-355-8745</a> or <a href="@@/contact.html">book a call</a>.</p>
+  </div>
+</aside>
+<script>window.__SMA_BASE = "@@/";</script>
+<script src="../hero-scene.js"></script></body></html>

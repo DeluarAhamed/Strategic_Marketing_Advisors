@@ -1,0 +1,216 @@
+/* ============================================================
+   Strategic Marketing Advisors — Design System
+   Recreated from Relume export (tokens in DESIGN.md / globals.css)
+   ============================================================ */
+
+/* ---------- Fonts (local woff2) ---------- */
+@font-face {
+  font-family: "DM Serif Text";
+  src: url("assets/fonts/dm-serif-text-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face { font-family: "Mulish"; src: url("assets/fonts/mulish-200.woff2") format("woff2"); font-weight: 200; font-display: swap; }
+@font-face { font-family: "Mulish"; src: url("assets/fonts/mulish-300.woff2") format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Mulish"; src: url("assets/fonts/mulish-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Mulish"; src: url("assets/fonts/mulish-500.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Mulish"; src: url("assets/fonts/mulish-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Mulish"; src: url("assets/fonts/mulish-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Mulish"; src: url("assets/fonts/mulish-800.woff2") format("woff2"); font-weight: 800; font-display: swap; }
+@font-face { font-family: "Mulish"; src: url("assets/fonts/mulish-900.woff2") format("woff2"); font-weight: 900; font-display: swap; }
+
+/* ---------- Design tokens ---------- */
+:root {
+  --color-white: #ffffff;
+  --color-neutral-lightest: #f2f2f2;
+  --color-neutral-lighter: #d8d9da;
+  --color-neutral-light: #b2b3b5;
+  --color-neutral: #7f8184;
+  --color-neutral-dark: #4c4e53;
+  --color-neutral-darker: #191c22;
+  --color-neutral-darkest: #00030a;
+
+  --color-sangria-lightest: #f4e5e5;
+  --color-sangria-lighter: #eacccc;
+  --color-sangria-light: #b64c4d;
+  --color-sangria: #980001;
+  --color-sangria-dark: #790000;
+  --color-sangria-darker: #3c0000;
+  --color-sangria-darkest: #2d0000;
+
+  --color-midnight-blue: #003265;
+
+  /* Brand blue (from logo) */
+  --color-blue-lightest: #e7eef5;
+  --color-blue-lighter: #b9cee0;
+  --color-blue-light: #2f5d8a;
+  --color-blue: #003467;
+  --color-blue-dark: #00223f;
+  --color-blue-darker: #001327;
+  --color-blue-darkest: #000c18;
+  --color-ink-gray: #707070;
+
+  /* type scale (mobile defaults) — clear descending hierarchy */
+  --text-h1: 3rem;
+  --text-h2: 2.25rem;
+  --text-h3: 1.75rem;
+  --text-h4: 1.4rem;
+  --text-h5: 1.2rem;
+  --text-h6: 1.0625rem;
+  --text-large: 1.125rem;
+  --text-medium: 1rem;
+  --text-regular: 0.875rem;
+  --text-small: 0.75rem;
+  --text-tiny: 0.625rem;
+
+  --radius-button: 6.25rem;
+  --radius-card: 0.5rem;
+  --radius-image: 0.5rem;
+  --radius-badge: 6.25rem;
+  --radius-form: 0.75rem;
+
+  --container: 80rem;
+  --max-w-lg: 48rem;
+  --max-w-md: 35rem;
+
+  font-size: 16px;
+}
+
+@media (min-width: 992px) {
+  :root {
+    --text-h1: 5.25rem;
+    --text-h2: 3.75rem;
+    --text-h3: 3rem;
+    --text-h4: 2.5rem;
+    --text-h5: 2rem;
+    --text-h6: 1.625rem;
+    --text-large: 1.625rem;
+    --text-medium: 1.25rem;
+    --text-regular: 1.125rem;
+    --text-small: 1rem;
+    --text-tiny: 0.75rem;
+  }
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Mulish", system-ui, sans-serif;
+  font-weight: 400;
+  color: var(--color-neutral-darkest);
+  background: var(--color-neutral-darkest);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+h1, h2, h3, h4, h5, h6 {
+  font-family: "DM Serif Text", Georgia, serif;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+
+/* ---------- Type helpers ---------- */
+.h1 { font-size: var(--text-h1); line-height: 1.1; }
+.h2 { font-size: var(--text-h2); line-height: 1.2; }
+.h3 { font-size: var(--text-h3); line-height: 1.2; }
+.h4 { font-size: var(--text-h4); line-height: 1.2; }
+.h5 { font-size: var(--text-h5); line-height: 1.2; }
+.h6 { font-size: var(--text-h6); line-height: 1.2; }
+.t-large { font-size: var(--text-large); }
+.t-medium { font-size: var(--text-medium); }
+.t-regular { font-size: var(--text-regular); }
+.t-small { font-size: var(--text-small); }
+.eyebrow { font-weight: 700; font-size: var(--text-medium); color: var(--accent); letter-spacing: .04em; text-transform: uppercase; }
+.semibold { font-weight: 600; }
+
+/* ---------- Layout ---------- */
+.container { width: 100%; max-width: var(--container); margin-inline: auto; }
+.section { padding: 3rem 5%; }
+@media (min-width: 768px) { .section { padding: 6rem 5%; } }
+@media (min-width: 992px) { .section { padding: 7rem 5%; } }
+.measure-lg { max-width: var(--max-w-lg); }
+.center { text-align: center; margin-inline: auto; }
+
+/* ---------- Color schemes (from globals.css) ----------
+   scheme-1: cream | scheme-2: pink | scheme-3: dark | scheme-4: gray */
+.scheme-1 { --bg: var(--color-sangria-lightest); --fg: var(--color-neutral-darkest);
+  --text: var(--color-neutral-darkest); --border: rgba(0,3,10,.15); --accent: var(--color-sangria); }
+.scheme-2 { --bg: var(--color-sangria-lighter); --fg: var(--color-neutral-darkest);
+  --text: var(--color-neutral-darkest); --border: rgba(0,3,10,.15); --accent: var(--color-sangria); }
+.scheme-3 { --bg: var(--color-blue-darker); --fg: var(--color-blue-darker);
+  --text: var(--color-white); --border: rgba(255,255,255,.18); --accent: var(--color-sangria-lighter); }
+.scheme-4 { --bg: var(--color-blue-dark); --fg: var(--color-blue-dark);
+  --text: var(--color-white); --border: rgba(255,255,255,.18); --accent: var(--color-sangria-lighter); }
+.scheme-5 { --bg: var(--color-blue); --fg: var(--color-blue);
+  --text: var(--color-white); --border: rgba(255,255,255,.22); --accent: var(--color-sangria-lighter); }
+[class*="scheme-"] { background-color: var(--bg); color: var(--text); }
+
+/* ---------- Brick buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  font-family: "Mulish", sans-serif; font-weight: 600; font-size: var(--text-medium);
+  line-height: 1; text-align: center; white-space: nowrap;
+  padding: .85rem 1.6rem; border-radius: var(--radius-button);
+  border: 1.5px solid var(--ink, var(--color-neutral-darkest));
+  background: var(--color-white); color: var(--color-neutral-darkest);
+  box-shadow: 4px 4px 0 0 var(--ink, var(--color-neutral-darkest));
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+.btn:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 0 var(--ink, var(--color-neutral-darkest)); }
+.btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 0 var(--ink, var(--color-neutral-darkest)); }
+.btn-primary { background: var(--color-sangria); color: var(--color-white); }
+.btn-secondary { background: var(--color-white); color: var(--color-neutral-darkest); }
+.btn-blue { background: var(--color-blue); color: var(--color-white); }
+/* dark schemes: outline-style brick with light ink */
+.scheme-3 .btn, .scheme-4 .btn, .scheme-5 .btn { --ink: var(--color-white); }
+.scheme-3 .btn-secondary, .scheme-4 .btn-secondary, .scheme-5 .btn-secondary {
+  background: transparent; color: var(--color-white);
+}
+.scheme-3 .btn-primary, .scheme-4 .btn-primary, .scheme-5 .btn-primary {
+  background: var(--color-sangria); color: var(--color-white);
+  --ink: var(--color-white);
+}
+.scheme-5 .btn-blue { background: var(--color-white); color: var(--color-blue); }
+
+/* link button */
+.btn-link {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-weight: 600; font-size: var(--text-medium); color: var(--text);
+  background: none; border: none; box-shadow: none; padding: 0;
+}
+.btn-link .chev { width: 1em; height: 1em; transition: transform .15s ease; }
+.btn-link:hover .chev { transform: translateX(3px); }
+
+/* ---------- Cards (outlined) ---------- */
+.card {
+  border: 1px solid var(--border); border-radius: var(--radius-card);
+  background: transparent; overflow: hidden;
+}
+
+/* ---------- Badge ---------- */
+.badge {
+  display: inline-flex; align-items: center; padding: .25rem .75rem;
+  border: 1px solid var(--border); border-radius: var(--radius-badge);
+  font-size: var(--text-small); font-weight: 600;
+}
+
+/* ---------- Icons ---------- */
+.icon { display: inline-block; vertical-align: middle; fill: none;
+  stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.icon-solid { fill: currentColor; stroke: none; }
+
+/* ---------- Images ---------- */
+.rounded-img { border-radius: var(--radius-image); object-fit: cover; width: 100%; }
+
+/* ---------- Utility ---------- */
+.grid { display: grid; }
+.flex { display: flex; }
+.eyebrow-mb { margin-bottom: .75rem; }
+@media (min-width: 768px) { .eyebrow-mb { margin-bottom: 1rem; } }
