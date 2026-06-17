@@ -909,5 +909,15 @@ body { background: var(--editorial-paper); color: var(--editorial-ink); }
 
 @media (max-width: 560px) {
   .hero2__card { min-height: max(42rem, calc(100svh - 5.25rem)); }
-  .hero2__photo { opacity: .34; }
+  .hero2__card::after {
+    background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.14) 38%, rgba(255,253,248,.96) 72%, rgba(255,253,248,.98) 100%);
+  }
+  .hero2__photo {
+    height: 40%;
+    opacity: .88;
+    filter: drop-shadow(0 22px 34px rgba(8,29,58,.24));
+    -webkit-mask-image: linear-gradient(180deg, #000 78%, rgba(0,0,0,.82) 91%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 78%, rgba(0,0,0,.82) 91%, transparent 100%);
+  }
+  .hero2__inner { padding-top: 18.25rem; }
 }
