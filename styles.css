@@ -40,6 +40,10 @@
   --color-sangria-darkest: #2d0000;
 
   --color-midnight-blue: #003265;
+  --color-growth-green: #22c55e;
+  --color-growth-green-dark: #17883f;
+  --color-paper: #fffdf8;
+  --color-paper-warm: #f7f2e9;
 
   /* Brand blue (from logo) */
   --color-blue-lightest: #e7eef5;
@@ -100,7 +104,7 @@ body {
   font-family: "Mulish", system-ui, sans-serif;
   font-weight: 400;
   color: var(--color-neutral-darkest);
-  background: var(--color-neutral-darkest);
+  background: var(--color-paper);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -140,16 +144,16 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ---------- Color schemes (from globals.css) ----------
    scheme-1: cream | scheme-2: pink | scheme-3: dark | scheme-4: gray */
-.scheme-1 { --bg: var(--color-sangria-lightest); --fg: var(--color-neutral-darkest);
+.scheme-1 { --bg: var(--color-white); --fg: var(--color-neutral-darkest);
   --text: var(--color-neutral-darkest); --border: rgba(0,3,10,.15); --accent: var(--color-sangria); }
-.scheme-2 { --bg: var(--color-sangria-lighter); --fg: var(--color-neutral-darkest);
+.scheme-2 { --bg: var(--color-paper-warm); --fg: var(--color-neutral-darkest);
   --text: var(--color-neutral-darkest); --border: rgba(0,3,10,.15); --accent: var(--color-sangria); }
-.scheme-3 { --bg: var(--color-blue-darker); --fg: var(--color-blue-darker);
-  --text: var(--color-white); --border: rgba(255,255,255,.18); --accent: var(--color-sangria-lighter); }
-.scheme-4 { --bg: var(--color-blue-dark); --fg: var(--color-blue-dark);
-  --text: var(--color-white); --border: rgba(255,255,255,.18); --accent: var(--color-sangria-lighter); }
-.scheme-5 { --bg: var(--color-blue); --fg: var(--color-blue);
-  --text: var(--color-white); --border: rgba(255,255,255,.22); --accent: var(--color-sangria-lighter); }
+.scheme-3 { --bg: var(--color-white); --fg: var(--color-neutral-darkest);
+  --text: var(--color-neutral-darkest); --border: rgba(0,19,39,.14); --accent: var(--color-blue); }
+.scheme-4 { --bg: #f8fafc; --fg: var(--color-neutral-darkest);
+  --text: var(--color-neutral-darkest); --border: rgba(0,19,39,.14); --accent: var(--color-growth-green-dark); }
+.scheme-5 { --bg: var(--color-blue-darker); --fg: var(--color-blue-darker);
+  --text: var(--color-white); --border: rgba(255,255,255,.22); --accent: var(--color-growth-green); }
 [class*="scheme-"] { background-color: var(--bg); color: var(--text); }
 
 /* ---------- Brick buttons ---------- */

@@ -39,15 +39,21 @@
   var hero = document.querySelector(".hero2__card");
   if (hero) {
     var tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    tl.from(".hero2__eyebrow", { opacity: 0, y: 18, duration: 0.55 })
-      .from(".hero2 h1", { opacity: 0, y: 32, duration: 0.85 }, "-=0.25")
-      .from(".hero2__sub", { opacity: 0, y: 20, duration: 0.6 }, "-=0.5")
-      .from(".hero2__cta", { opacity: 0, y: 18, duration: 0.55 }, "-=0.4")
-      .from(".hero2__stat", { opacity: 0, y: 18, scale: 0.96, duration: 0.6 }, "-=0.35")
-      .from(".hero2__photo", { opacity: 0, xPercent: 12, duration: 1.1, ease: "power2.out" }, "-=1.05");
+    var eyebrow = hero.querySelector(".hero2__eyebrow");
+    var title = hero.querySelector("h1");
+    var sub = hero.querySelector(".hero2__sub");
+    var cta = hero.querySelector(".hero2__cta");
+    var stat = hero.querySelector(".hero2__stat");
+    var photo = hero.querySelector(".hero2__photo");
+    if (eyebrow) tl.from(eyebrow, { opacity: 0, y: 18, duration: 0.55 });
+    if (title) tl.from(title, { opacity: 0, y: 32, duration: 0.85 }, "-=0.25");
+    if (sub) tl.from(sub, { opacity: 0, y: 20, duration: 0.6 }, "-=0.5");
+    if (cta) tl.from(cta, { opacity: 0, y: 18, duration: 0.55 }, "-=0.4");
+    if (stat) tl.from(stat, { opacity: 0, y: 18, scale: 0.96, duration: 0.6 }, "-=0.35");
+    if (photo) tl.from(photo, { opacity: 0, xPercent: 12, duration: 1.1, ease: "power2.out" }, "-=1.05");
 
-    if (window.ScrollTrigger) {
-      gsap.to(".hero2__photo", {
+    if (photo && window.ScrollTrigger) {
+      gsap.to(photo, {
         yPercent: -7, ease: "none",
         scrollTrigger: { trigger: ".hero2", start: "top top", end: "bottom top", scrub: true }
       });
