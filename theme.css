@@ -921,3 +921,43 @@ body { background: var(--editorial-paper); color: var(--editorial-ink); }
   }
   .hero2__inner { padding-top: 18.25rem; }
 }
+
+/* Homepage hero: business-style editorial image instead of a founder cutout. */
+.hero2__photo {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: min(58%, 58rem);
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  opacity: .94;
+  filter: saturate(.94) contrast(1.02);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 100%);
+}
+.hero2__card::after {
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.9) 42%, rgba(255,255,255,.34) 63%, rgba(255,255,255,.08) 100%);
+}
+@media (max-width: 860px) {
+  .hero2__photo {
+    width: 100%;
+    height: 48%;
+    object-position: center;
+    opacity: .72;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 76%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 76%, transparent 100%);
+  }
+  .hero2__card::after {
+    background: linear-gradient(180deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.5) 43%, rgba(255,253,248,.98) 68%, rgba(255,253,248,.98) 100%);
+  }
+}
+@media (max-width: 560px) {
+  .hero2__photo {
+    height: 42%;
+    opacity: .78;
+    filter: saturate(.94) contrast(1.02);
+  }
+  .hero2__inner { padding-top: 17.75rem; }
+}
