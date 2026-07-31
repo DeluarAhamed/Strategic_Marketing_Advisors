@@ -11,5 +11,6 @@ sanity/seed/*.ndjson
 .sanity/
 dist/
 sanity-dist/
+sanity-hosted-build/
 studio/
 static/
