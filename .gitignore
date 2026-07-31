@@ -4,3 +4,9 @@ node_modules/
 .preview-server*.log
 .DS_Store
 npm-debug.log*
+.env
+.env.*
+!.env.example
+sanity/seed/*.ndjson
+.sanity/
+dist/
