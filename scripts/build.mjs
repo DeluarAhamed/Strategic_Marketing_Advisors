@@ -106,7 +106,7 @@ fs.writeFileSync(resourcePath, $resources.html());
 const htmlFiles = [];
 function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if ([".git", ".sanity", "dist", "node_modules", "uploads", "admin", "partials"].includes(entry.name)) continue;
+    if ([".git", ".sanity", "dist", "sanity-dist", "studio", "static", "node_modules", "uploads", "admin", "partials"].includes(entry.name)) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(full);
     else if (entry.name.endsWith(".html")) htmlFiles.push(full);

@@ -10,3 +10,6 @@ npm-debug.log*
 sanity/seed/*.ndjson
 .sanity/
 dist/
+sanity-dist/
+studio/
+static/

@@ -10,6 +10,7 @@
     "sanity:dev": "sanity dev",
     "sanity:deploy": "sanity deploy",
     "sanity:import": "npm run sanity:seed && sanity dataset import sanity/seed/production.ndjson production --replace",
+    "studio:build": "sanity build studio --yes && node scripts/fix-studio-build.mjs",
     "build": "node scripts/build.mjs",
     "check": "node scripts/check-links.mjs",
     "test": "npm run build && npm run check",
