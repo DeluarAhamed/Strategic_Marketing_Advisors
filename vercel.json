@@ -6,7 +6,7 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/studio/(.*)",
+      "source": "/studio/:path*",
       "destination": "/studio/index.html"
     }
   ],
