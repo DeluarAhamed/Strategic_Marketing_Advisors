@@ -42,15 +42,20 @@
     var mount = document.createElement('div');
     mount.setAttribute('data-widget-key', 'a65d79bf-6874-4063-9498-931cddc5e158');
     mount.id = 'sma-voice-widget';
-    var host = document.querySelector('[data-voice-host]');
-    if (host) host.appendChild(mount);
-    else {
       var dock = document.createElement('details');
       dock.className = 'voice-dock';
       var summary = document.createElement('summary');
-      summary.textContent = 'Talk to the AI Front Desk';
-      dock.appendChild(summary); dock.appendChild(mount); document.body.appendChild(dock);
-    }
+      summary.textContent = 'Talk to Kate · AI Front Desk';
+      dock.appendChild(summary);
+      var intro = document.createElement('p');
+      intro.className = 'voice-dock__intro';
+      intro.textContent = 'Ask about our services. For appointment times, use our booking calendar.';
+      dock.appendChild(intro); dock.appendChild(mount);
+      var book = document.createElement('button');
+      book.type = 'button'; book.className = 'voice-dock__book'; book.textContent = 'Book a call with David';
+      book.addEventListener('click', function () { var link = document.querySelector('a[data-booking-open]'); if (link) link.click(); });
+      dock.appendChild(book); document.body.appendChild(dock);
+      if (document.querySelector('[data-voice-host]')) dock.open = true;
     document.querySelectorAll('[data-voice-status]').forEach(function (el) { el.textContent = 'Loading the voice demo… If it is unavailable, you can still book a live walkthrough below.'; });
     var script = document.createElement('script');
     script.src = 'https://d2cqc7yqzf8c8f.cloudfront.net/web-widget.js';
@@ -93,7 +98,7 @@
     });
   }
   document.querySelectorAll('[data-cookie-settings]').forEach(function (button) { button.addEventListener('click', function () { notice(true, true); }); });
-  document.querySelectorAll('[data-enable-voice]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: true, booking: prefs.booking }); }); });
+  document.querySelectorAll('[data-enable-voice]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: true, booking: prefs.booking }); var dock=document.querySelector('.voice-dock'); if(dock)dock.open=true; }); });
   document.querySelectorAll('[data-enable-booking]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: prefs.voice, booking: true }); }); });
   document.querySelectorAll('[data-booking-open]').forEach(function (link) {
     link.addEventListener('click', function (event) {

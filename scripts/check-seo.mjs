@@ -5,7 +5,7 @@ import * as cheerio from 'cheerio';
 import {canonicalPath, siteUrl} from './seo.mjs';
 import {retired,calendar} from './site-shell.mjs';
 const files=[];
-for(const dir of ['.','about','services','articles'])for(const name of fs.readdirSync(dir))if(name.endsWith('.html'))files.push(path.join(dir,name).replaceAll('\\','/'));
+for(const dir of ['.','about','services','articles','resources'])for(const name of fs.readdirSync(dir))if(name.endsWith('.html'))files.push(path.join(dir,name).replaceAll('\\','/'));
 const sitemap=fs.readFileSync('sitemap.xml','utf8');
 const titles=new Set();
 const descriptions=new Set();

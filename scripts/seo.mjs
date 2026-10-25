@@ -22,7 +22,7 @@ export function applySeo(files, articles) {
     const url = absolute(canonicalPath(relative));
     const image = absolute(article?.cardImage || 'assets/images/david-mary.png');
     $('title').text(title);
-    $('meta[name="description"], meta[name="robots"], link[rel="canonical"], meta[property^="og:"], meta[name^="twitter:"], script[type="application/ld+json"]').remove();
+    $('meta[name="description"], meta[name="robots"], link[rel="canonical"], meta[property^="og:"], meta[property^="article:"], meta[name^="twitter:"], script[type="application/ld+json"]').remove();
     const meta = (name, content, property=false) => $('<meta>').attr({[property ? 'property' : 'name']: name, content}).appendTo('head');
     meta('description', description);
     meta('robots', utility ? 'noindex, follow' : 'index, follow, max-image-preview:large');
@@ -95,7 +95,7 @@ export function applySeo(files, articles) {
     if(relative==='about/faq.html')graph[2].mainEntity=$('.faq-group details').map((i,e)=>({'@type':'Question',name:$(e).find('summary').text(),acceptedAnswer:{'@type':'Answer',text:$(e).find('p').text()}})).get();
     if(relative!=='index.html'&&!utility){
       const crumbs=[{name:'Home',item:`${siteUrl}/`}];
-      if(relative.includes('/')) {const parent=relative.split('/')[0];crumbs.push({name:parent==='services'?'Services':parent==='about'?'About':'Blog',item:absolute(parent==='articles'?'/blog':`/${parent}`)});}
+      if(relative.includes('/')) {const parent=relative.split('/')[0];crumbs.push({name:parent==='services'?'Services':parent==='about'?'About':parent==='resources'?'Resources':'Blog',item:absolute(parent==='articles'?'/blog':`/${parent}`)});}
       crumbs.push({name:plain($('h1').first().html()),item:url});
       graph.push({'@type':'BreadcrumbList',itemListElement:crumbs.map((c,i)=>({'@type':'ListItem',position:i+1,...c}))});
     }

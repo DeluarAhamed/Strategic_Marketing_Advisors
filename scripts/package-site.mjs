@@ -10,7 +10,7 @@ for(const entry of fs.readdirSync(output))fs.rmSync(path.join(output,entry),{rec
 for(const name of fs.readdirSync(root)){
   if(/\.(html|css|js|xml|txt)$/.test(name)&&!name.startsWith('sanity.'))fs.copyFileSync(path.join(root,name),path.join(output,name));
 }
-for(const name of ['assets','about','articles','services','admin','studio','static']){
+for(const name of ['assets','about','articles','services','resources','admin','studio','static']){
   const source=path.join(root,name);
   if(fs.existsSync(source))fs.cpSync(source,path.join(output,name),{recursive:true});
 }
