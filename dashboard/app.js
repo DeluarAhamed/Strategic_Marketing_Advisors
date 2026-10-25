@@ -26,8 +26,37 @@ async function api(action,body,params=''){
 }
 function showLogin(){session=null;profile=null;sessionStorage.removeItem('sma-dashboard-session');if(!adminEntry){location.replace('/admin');return;}$('#dashboard').hidden=true;$('#login').hidden=false;const modal=$('#auth-modal');if(modal&&!modal.open)modal.showModal();}
 async function start(){profile=await api('profile');if(adminEntry){location.replace('/dashboard');return;}$('#login').hidden=true;$('#dashboard').hidden=false;$('#account-email').textContent=profile.email;$('#account-role').textContent=profile.role;document.querySelectorAll('[data-tab]').forEach(button=>{button.hidden=profile.role==='viewer'&&button.dataset.tab!=='overview';});await navigate('overview');}
-$('#login-form').addEventListener('submit',async event=>{event.preventDefault();const form=event.currentTarget,button=form.querySelector('button');button.disabled=true;$('#login-status').textContent='Signing in…';try{const fields=new FormData(form);const data=await auth('token?grant_type=password',{email:fields.get('email'),password:fields.get('password')});remember({...data,expires_at:Math.floor(Date.now()/1000)+data.expires_in});form.elements.password.value='';await start();$('#login-status').textContent='';}catch(e){$('#login-status').textContent=e.message;}finally{button.disabled=false;}});
-$('#register').addEventListener('click',async()=>{const form=$('#login-form');if(!form.reportValidity())return;$('#register').disabled=true;try{const data=await auth('signup',{email:form.elements.email.value,password:form.elements.password.value});form.elements.password.value='';if(data.access_token){remember({...data,expires_at:Math.floor(Date.now()/1000)+data.expires_in});await start();}else $('#login-status').textContent='Check your email to confirm your account, then return here to sign in. Only approved team emails can access SMA data. If you already have an account, use Sign in.';}catch(e){$('#login-status').textContent=e.message;}finally{$('#register').disabled=false;}});
+let authMode=new URLSearchParams(location.search).get('mode')==='create'?'create':'signin';
+const confirmLabel=document.createElement('label');
+confirmLabel.innerHTML='Confirm new password<input name="passwordConfirmation" type="password" autocomplete="new-password" minlength="12">';
+$('#login-form').insertBefore(confirmLabel,$('#login-form button[type="submit"]'));
+function setAuthMode(mode,clearStatus=true){
+ authMode=mode;const create=mode==='create',form=$('#login-form');
+ $('.login-card h2').textContent=create?'Create your admin account.':'Welcome back.';
+ $('.login-card h2 + p').textContent=create?'Use your approved team email and choose a new password.':'Sign in with your approved SMA team account.';
+ form.querySelector('label:has(input[name="password"])').firstChild.textContent=create?'New password':'Password';
+ form.elements.password.autocomplete=create?'new-password':'current-password';form.elements.password.minLength=create?12:1;
+ confirmLabel.hidden=!create;form.elements.passwordConfirmation.required=create;
+ form.querySelector('button[type="submit"]').textContent=create?'Create account':'Sign in';
+ $('#register').textContent=create?'Already have an account? Sign in':'First visit? Create your admin account';
+ $('.login-card .help').textContent=create?'Choose a unique password with at least 12 characters. After creating your account, confirm the email before signing in.':'Only approved team accounts can access the dashboard. Create your account first if you have not set a password yet.';
+ if(clearStatus)$('#login-status').textContent='';
+ const url=new URL(location.href);if(create)url.searchParams.set('mode','create');else url.searchParams.delete('mode');history.replaceState(null,'',url.pathname+url.search);
+}
+setAuthMode(authMode);
+$('#register').addEventListener('click',()=>setAuthMode(authMode==='create'?'signin':'create'));
+$('#login-form').addEventListener('submit',async event=>{
+ event.preventDefault();const form=event.currentTarget,button=form.querySelector('button[type="submit"]'),create=authMode==='create';
+ if(create&&form.elements.password.value!==form.elements.passwordConfirmation.value){$('#login-status').textContent='The passwords do not match. Please enter them again.';form.elements.passwordConfirmation.focus();return;}
+ button.disabled=true;$('#register').disabled=true;$('#login-status').textContent=create?'Creating your account…':'Signing in…';
+ try{
+  const data=await auth(create?'signup':'token?grant_type=password',{email:form.elements.email.value.trim(),password:form.elements.password.value});
+  form.elements.password.value='';form.elements.passwordConfirmation.value='';
+  if(data.access_token){remember({...data,expires_at:Math.floor(Date.now()/1000)+data.expires_in});await start();$('#login-status').textContent='';}
+  else {$('#login-status').textContent='Check your email to confirm your account. After confirmation, choose “Already have an account? Sign in” below and use your new password. If an account already exists for this email, sign in with that account.';}
+ }catch(e){$('#login-status').textContent=!create&&/invalid login credentials/i.test(e.message)?'That email and password were not accepted. If you have not created your account yet, choose “First visit? Create your admin account” below.':e.message;}
+ finally{button.disabled=false;$('#register').disabled=false;}
+});
 $('#logout').addEventListener('click',async()=>{try{await fetch(config.url+'/auth/v1/logout',{method:'POST',headers:{apikey:config.publishableKey,Authorization:'Bearer '+await token()}});}finally{showLogin();}});
 document.querySelectorAll('[data-tab]').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.tab)));
 const empty=(message='Nothing to show yet.')=>`<p class="empty">${esc(message)}</p>`;
