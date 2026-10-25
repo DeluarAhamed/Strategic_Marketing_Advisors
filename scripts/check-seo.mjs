@@ -31,6 +31,7 @@ for(const file of files){
     assert.equal($('main iframe[data-booking-src]').attr('data-booking-src'),calendar,'Contact uses the supplied calendar');
     assert.equal($('main iframe[data-booking-src]').attr('src'),undefined,'Calendar is not loaded before consent');
     assert.equal($('form[data-sma-lead-form]').length,1,'Contact has the connected private inquiry form');
+    assert.deepEqual($('form[data-sma-lead-form] select[name="interest"] option').toArray().map(e=>$(e).attr('value')??$(e).text()),['','AI Voice Agents','VedaKosa','Existing client support','Not sure yet'],'Contact service choices must be selectable options');
     assert.equal($('form[data-email-handoff],form[data-netlify]').length,0,'Old contact/email handoff forms removed');
   }
   if(file==='about/faq.html')assert.ok($('.faq-group details').length>=20,'FAQ includes the supplied topics');
