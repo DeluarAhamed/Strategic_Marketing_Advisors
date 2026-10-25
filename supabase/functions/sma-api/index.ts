@@ -57,17 +57,42 @@ async function publicAction(action:string,req:Request,body:any,ipKey:string){
  throw new RequestError('Not found.',404);
 }
 async function adminAction(action:string,req:Request,body:any,who:any){
- if(who.role==='viewer'&&!['profile','overview'].includes(action))throw new RequestError('This account can view reports only.',403);
+ if(who.role==='viewer'&&!['profile','overview','insights'].includes(action))throw new RequestError('This account can view reports only.',403);
  const writable=['owner','editor'].includes(who.role);
  if(req.method==='POST'&&!writable)throw new RequestError('This account has read-only access.',403);
  const url=new URL(req.url);
+ if(action==='insights'&&req.method==='GET'){
+  const days=[7,30,90].includes(Number(url.searchParams.get('days')))?Number(url.searchParams.get('days')):30;
+  const device=url.searchParams.get('device')||'';if(!['','mobile','tablet','desktop'].includes(device))throw new RequestError('Invalid device filter.');
+  return await db('rpc/sma_insights','POST',{p_days:days,p_device:device});
+ }
+ if(action==='lead-search'&&req.method==='GET'){
+  const stage=url.searchParams.get('stage')||'',interest=url.searchParams.get('interest')||'';
+  if(stage&&!stages.includes(stage)||interest&&!interests.includes(interest))throw new RequestError('Invalid lead filter.');
+  return await db('rpc/sma_lead_search','POST',{p_query:text(url.searchParams.get('q')||'',120),p_stage:stage,p_interest:interest,p_offset:Math.max(0,Math.min(Number(url.searchParams.get('offset'))||0,100000))});
+ }
+ if(action==='work-queue'&&req.method==='GET')return await db('rpc/sma_work_queue','POST',{});
+ if(action==='lead-detail'&&req.method==='GET'){
+  const id=text(url.searchParams.get('id'),36,true);if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))throw new RequestError('Invalid lead identifier.');
+  const rows=await db('sma_leads?id=eq.'+id+'&is_test=eq.false');if(!rows.length)throw new RequestError('Lead not found.',404);
+  const [tasks,activity]=await Promise.all([db('sma_followups?lead_id=eq.'+id+'&order=created_at.desc&limit=100'),db('sma_lead_activity?lead_id=eq.'+id+'&order=created_at.desc,id.desc&limit=100')]);
+  return {lead:rows[0],tasks,activity};
+ }
+ if(['add-task','complete-task','add-activity','lead-update'].includes(action)&&req.method==='POST'){
+  const id=text(body.id,36,true);if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))throw new RequestError('Invalid identifier.');
+  const data:any={id};
+  if(action==='lead-update'){if(!stages.includes(body.stage)||!['normal','high'].includes(body.priority||'normal'))throw new RequestError('Invalid lead update.');Object.assign(data,{stage:body.stage,notes:text(body.notes||'',8000),priority:body.priority||'normal'});}
+  if(action==='add-task'){
+   const due=Date.parse(body.due_at);if(!Number.isFinite(due)||due<Date.now()-366*86400000||due>Date.now()+5*366*86400000)throw new RequestError('Choose a valid follow-up date within five years.');
+   Object.assign(data,{title:text(body.title,180,true),due_at:new Date(due).toISOString()});
+  }
+  if(action==='add-activity'){if(!['note','call','email','meeting'].includes(body.kind))throw new RequestError('Choose a valid activity type.');Object.assign(data,{kind:body.kind,body:text(body.body,4000,true)});}
+  const result=await db('rpc/sma_crm_write','POST',{p_action:action,p_data:data,p_actor:who.email});if(result.error)throw new RequestError(result.error,409);
+  return result;
+ }
  if(action==='profile'&&req.method==='GET')return {email:who.email,role:who.role};
  if(action==='overview'&&req.method==='GET'){const days=[7,30,90].includes(Number(url.searchParams.get('days')))?Number(url.searchParams.get('days')):30;return await db('rpc/sma_overview','POST',{p_days:days});}
  if(action==='leads'&&req.method==='GET'){const offset=Math.max(0,Math.min(Number(url.searchParams.get('offset'))||0,100000));return await db('sma_leads?is_test=eq.false&select=id,created_at,name,email,phone,business,interest,message,stage,notes,source,updated_at&order=created_at.desc&limit=50&offset='+offset);}
- if(action==='lead-update'&&req.method==='POST'){
-  const id=text(body.id,36,true);if(!/^[0-9a-f-]{36}$/.test(id)||!stages.includes(body.stage))throw new RequestError('Invalid lead update.');
-  const r=await db('sma_leads?id=eq.'+id,'PATCH',{stage:body.stage,notes:text(body.notes||'',8000),updated_at:new Date().toISOString()});await audit(who.email,'update_lead',id);return r;
- }
  if(action==='content'&&req.method==='GET')return await db('sma_content_drafts?select=path,kind,revision,updated_at,updated_by,content&order=path');
  if(action==='published'&&req.method==='GET')return await db('sma_published_content?select=path,revision,published_at&order=path');
  if(action==='save-content'&&req.method==='POST'){

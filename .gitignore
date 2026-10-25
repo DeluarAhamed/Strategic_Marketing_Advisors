@@ -16,3 +16,5 @@ studio/
 static/
 work/
 runtime-templates/
+
+supabase/.temp/
