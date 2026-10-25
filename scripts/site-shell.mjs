@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import {applyVisualShell} from './visual-shell.mjs';
 export const calendar = 'https://atlas.strategicmarketingadvisors.com/widget/bookings/smaic-calendar';
 export const retired = {
   'services/google-ads.html':'/services',
@@ -50,4 +51,5 @@ export function applySiteShell($, relative) {
     $(e).find('h2,h3').first().text('Put practical AI to work');
     $(e).find('p').first().text('Explore AI Voice Agents and VedaKosa with a founder-led strategy call.');
   });
+  applyVisualShell($,relative);
 }

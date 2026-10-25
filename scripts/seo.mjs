@@ -20,7 +20,7 @@ export function applySeo(files, articles) {
     const utility = ['404.html', 'success.html'].includes(relative) || !!retired[relative];
     const [title, description] = retired[relative] ? ['Our Current AI Services | Strategic Marketing Advisors', 'Explore SMA’s focused offer: AI Voice Agents and VedaKosa, with supporting AI Visibility for core-service clients.'] : seo.pages[relative] || [article ? `${article.title} | SMA` : $('title').text(), article?.description || $('meta[name="description"]').attr('content') || $('h1').text()];
     const url = absolute(canonicalPath(relative));
-    const image = absolute(article?.cardImage || 'assets/images/david-mary.png');
+    const image = absolute(article?.cardImage || 'assets/images/david-and-mary-life.webp');
     $('title').text(title);
     $('meta[name="description"], meta[name="robots"], link[rel="canonical"], meta[property^="og:"], meta[property^="article:"], meta[name^="twitter:"], script[type="application/ld+json"]').remove();
     const meta = (name, content, property=false) => $('<meta>').attr({[property ? 'property' : 'name']: name, content}).appendTo('head');
@@ -84,7 +84,7 @@ export function applySeo(files, articles) {
     const organization = {
       '@type':'Organization','@id':`${siteUrl}/#organization`,name:'Strategic Marketing Advisors, LLC',url:`${siteUrl}/`,
       description:'Founder-led AI Voice Agent and VedaKosa business system consulting from Cashiers, North Carolina, with AI Visibility support for core clients.',
-      logo:absolute('assets/logo.svg'),image:absolute('assets/images/david-mary.png'),telephone:'+1-877-355-8745',email:'hello@strategicmarketingadvisors.com',
+      logo:absolute('assets/logo.svg'),image:absolute('assets/images/david-and-mary-life.webp'),telephone:'+1-877-355-8745',email:'hello@strategicmarketingadvisors.com',
       address:{'@type':'PostalAddress',postOfficeBoxNumber:'2534',addressLocality:'Cashiers',addressRegion:'NC',postalCode:'28717',addressCountry:'US'},
       areaServed:{'@type':'Country',name:'United States'},
       founder:[{'@type':'Person',name:'Mary Eule Scarborough',url:absolute('/about/founders')},{'@type':'Person',name:'David A. Scarborough',url:absolute('/about/founders')}]
@@ -115,3 +115,4 @@ export function applySeo(files, articles) {
     $('meta[name="robots"]').remove();$('head').append('<meta name="robots" content="noindex, nofollow">');writeText(admin,$.html());
   }
 }
+

@@ -36,26 +36,22 @@
     });
     if (focus) root.querySelector(showControls ? '#consent-voice' : '[data-reject]').focus();
   }
+  function createVoiceDock() {
+    if (document.querySelector('.voice-dock')) return;
+    var dock = document.createElement('details');
+    dock.className = 'voice-dock';
+    dock.innerHTML = '<summary aria-label="Talk to Kate, AI assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-5-2-2 2a13 13 0 0 1-7-7l2-2-2-5Z"/></svg><span class="voice-launch-label">Questions? Talk to Kate</span></summary><div class="voice-panel"><div class="voice-panel__head"><div><strong>Meet your AI front desk</strong><small>Kate · SMA AI assistant</small></div><button type="button" class="voice-panel__close" aria-label="Close Kate panel">×</button></div><div class="voice-panel__profile"><img class="kate-avatar" src="/assets/images/kate-ai-avatar.webp" alt="AI-generated portrait representing Kate" width="112" height="112"><span class="ai-label">AI assistant</span><h2>Hi, I’m Kate.</h2><p>Ask about AI Voice Agents, VedaKosa or your next step with David.</p></div><button type="button" class="voice-panel__enable" data-enable-voice>Enable voice demo</button><p class="voice-panel__privacy">Enabling voice loads our third-party voice service. <a href="/privacy">Privacy details</a>. Your microphone starts only when you choose.</p><div id="sma-voice-widget"></div><p class="voice-panel__status" role="status" data-voice-status>Enable the demo, then use the microphone control to speak.</p><button type="button" class="voice-dock__book">Book a call with David</button></div>';
+    document.body.appendChild(dock);
+    dock.querySelector('.voice-panel__close').addEventListener('click',function(){dock.open=false;dock.querySelector('summary').focus();});
+    dock.querySelector('.voice-dock__book').addEventListener('click',function(){var link=document.querySelector('a[data-booking-open]');if(link)link.click();});
+    dock.addEventListener('keydown',function(event){if(event.key==='Escape'){dock.open=false;dock.querySelector('summary').focus();}});
+  }
   function loadVoice() {
     if (!prefs.voice || voiceLoaded) return;
     voiceLoaded = true;
-    var mount = document.createElement('div');
+    createVoiceDock();
+    var mount = document.getElementById('sma-voice-widget');
     mount.setAttribute('data-widget-key', 'a65d79bf-6874-4063-9498-931cddc5e158');
-    mount.id = 'sma-voice-widget';
-      var dock = document.createElement('details');
-      dock.className = 'voice-dock';
-      var summary = document.createElement('summary');
-      summary.textContent = 'Talk to Kate · AI Front Desk';
-      dock.appendChild(summary);
-      var intro = document.createElement('p');
-      intro.className = 'voice-dock__intro';
-      intro.textContent = 'Ask about our services. For appointment times, use our booking calendar.';
-      dock.appendChild(intro); dock.appendChild(mount);
-      var book = document.createElement('button');
-      book.type = 'button'; book.className = 'voice-dock__book'; book.textContent = 'Book a call with David';
-      book.addEventListener('click', function () { var link = document.querySelector('a[data-booking-open]'); if (link) link.click(); });
-      dock.appendChild(book); document.body.appendChild(dock);
-      if (document.querySelector('[data-voice-host]')) dock.open = true;
     document.querySelectorAll('[data-voice-status]').forEach(function (el) { el.textContent = 'Loading the voice demo… If it is unavailable, you can still book a live walkthrough below.'; });
     var script = document.createElement('script');
     script.src = 'https://d2cqc7yqzf8c8f.cloudfront.net/web-widget.js';
@@ -97,6 +93,8 @@
       }
     });
   }
+  createVoiceDock();
+  document.querySelectorAll('[data-open-voice]').forEach(function(button){button.addEventListener('click',function(){var dock=document.querySelector('.voice-dock');dock.open=true;dock.querySelector('.voice-panel__close').focus();});});
   document.querySelectorAll('[data-cookie-settings]').forEach(function (button) { button.addEventListener('click', function () { notice(true, true); }); });
   document.querySelectorAll('[data-enable-voice]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: true, booking: prefs.booking }); var dock=document.querySelector('.voice-dock'); if(dock)dock.open=true; }); });
   document.querySelectorAll('[data-enable-booking]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: prefs.voice, booking: true }); }); });
@@ -140,6 +138,16 @@
       document.querySelectorAll('[data-mega-trigger]').forEach(function(trigger){trigger.closest('.nav__item').classList.remove('is-expanded');trigger.setAttribute('aria-expanded','false');});
     }
   });
+  document.querySelectorAll('.faq-group details').forEach(function(item){
+    var hoverOpened=false, pinned=false;
+    item.addEventListener('pointerenter',function(event){if(event.pointerType==='mouse'&&window.matchMedia('(hover:hover) and (pointer:fine)').matches&&!item.open){item.open=true;hoverOpened=true;}});
+    item.querySelector('summary').addEventListener('click',function(event){if(event.detail>0&&hoverOpened){event.preventDefault();hoverOpened=false;pinned=true;}else{pinned=!item.open;hoverOpened=false;}});
+    item.addEventListener('pointerleave',function(event){if(event.pointerType==='mouse'&&!pinned&&!item.contains(document.activeElement)){item.open=false;hoverOpened=false;}});
+  });
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion:reduce)').matches) {
+    var counterObserver = new IntersectionObserver(function(entries){entries.forEach(function(entry){if(!entry.isIntersecting)return;var el=entry.target,end=Number(el.dataset.careerCount),began=performance.now();counterObserver.unobserve(el);function tick(now){var p=Math.min((now-began)/800,1);el.textContent=String(Math.round(end*(1-Math.pow(1-p,3))));if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);});},{threshold:.5});
+    document.querySelectorAll('[data-career-count]').forEach(function(el){counterObserver.observe(el);});
+  }
   applyPreferences();
   if (!recorded) notice(false, false);
 })();
