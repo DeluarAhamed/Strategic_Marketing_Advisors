@@ -1,8 +1,13 @@
+import {recoveryFromHash} from '/dashboard/auth-flow.js';
+const recoverySession=recoveryFromHash(location.hash);
+const recoveryError=new URLSearchParams(location.hash.replace(/^#/,'' )).has('error');
+if(location.hash)history.replaceState(null,'',location.pathname+location.search);
 const config=await fetch('/backend-config.json').then(r=>{if(!r.ok)throw new Error('Configuration unavailable');return r.json();});
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let session=null,profile=null,activeTab='overview',drafts=[],published=[],media=[],leads=[],leadOffset=0,currentDraft=null,currentLead=null;
 const adminEntry=/^\/admin(?:\/|$)/.test(location.pathname);
 try{session=JSON.parse(sessionStorage.getItem('sma-dashboard-session')||'null');}catch{}
+if(recoverySession){session=recoverySession;sessionStorage.setItem('sma-dashboard-session',JSON.stringify(session));}
 const names={overview:'Overview',leads:'Leads',content:'Content',media:'Media library',kate:'Kate & integrations',settings:'Team & activity'};
 if(adminEntry){
  document.body.classList.add('admin-entry');
@@ -14,10 +19,10 @@ if(adminEntry){
 }
 function status(message='',error=false){$('#app-status').textContent=message;$('#app-status').classList.toggle('error',error);}
 function remember(data){session=data;sessionStorage.setItem('sma-dashboard-session',JSON.stringify(data));}
-async function auth(route,body){const r=await fetch(config.url+'/auth/v1/'+route,{method:'POST',headers:{apikey:config.publishableKey,'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw new Error(data.msg||data.error_description||data.message||'Sign-in failed. Please try again.');return data;}
+async function auth(route,body,options={}){const headers={apikey:config.publishableKey,'Content-Type':'application/json'};if(options.authenticated)headers.Authorization='Bearer '+await token();const r=await fetch(config.url+'/auth/v1/'+route,{method:options.method||'POST',headers,body:body===undefined?undefined:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw new Error(data.msg||data.error_description||data.message||'Sign-in failed. Please try again.');return data;}
 async function token(){
  if(!session)throw new Error('Sign in to continue.');
- if(session.expires_at&&Date.now()/1000>session.expires_at-60){const fresh=await auth('token?grant_type=refresh_token',{refresh_token:session.refresh_token});remember({...fresh,expires_at:Math.floor(Date.now()/1000)+fresh.expires_in});}
+ if(session.expires_at&&Date.now()/1000>session.expires_at-60){const fresh=await auth('token?grant_type=refresh_token',{refresh_token:session.refresh_token});remember({...fresh,expires_at:Math.floor(Date.now()/1000)+fresh.expires_in,recovery:session.recovery===true});}
  return session.access_token;
 }
 async function api(action,body,params=''){
@@ -26,36 +31,49 @@ async function api(action,body,params=''){
 }
 function showLogin(){session=null;profile=null;sessionStorage.removeItem('sma-dashboard-session');if(!adminEntry){location.replace('/admin');return;}$('#dashboard').hidden=true;$('#login').hidden=false;const modal=$('#auth-modal');if(modal&&!modal.open)modal.showModal();}
 async function start(){profile=await api('profile');if(adminEntry){location.replace('/dashboard');return;}$('#login').hidden=true;$('#dashboard').hidden=false;$('#account-email').textContent=profile.email;$('#account-role').textContent=profile.role;document.querySelectorAll('[data-tab]').forEach(button=>{button.hidden=profile.role==='viewer'&&button.dataset.tab!=='overview';});await navigate('overview');}
-let authMode=new URLSearchParams(location.search).get('mode')==='create'?'create':'signin';
+let authMode=new URLSearchParams(location.search).get('mode')||'signin';
+if(!['signin','create','recover','reset'].includes(authMode))authMode='signin';
+if(recoverySession)authMode='reset';
+if(authMode==='reset'&&!session?.recovery)authMode='recover';
 const confirmLabel=document.createElement('label');
 confirmLabel.innerHTML='Confirm new password<input name="passwordConfirmation" type="password" autocomplete="new-password" minlength="12">';
 $('#login-form').insertBefore(confirmLabel,$('#login-form button[type="submit"]'));
+const forgot=document.createElement('button');forgot.id='forgot-password';forgot.type='button';forgot.className='text-button';forgot.textContent='Forgot your password?';$('#register').after(forgot);
 function setAuthMode(mode,clearStatus=true){
- authMode=mode;const create=mode==='create',form=$('#login-form');
- $('.login-card h2').textContent=create?'Create your admin account.':'Welcome back.';
- $('.login-card h2 + p').textContent=create?'Use your approved team email and choose a new password.':'Sign in with your approved SMA team account.';
- form.querySelector('label:has(input[name="password"])').firstChild.textContent=create?'New password':'Password';
- form.elements.password.autocomplete=create?'new-password':'current-password';form.elements.password.minLength=create?12:1;
- confirmLabel.hidden=!create;form.elements.passwordConfirmation.required=create;
- form.querySelector('button[type="submit"]').textContent=create?'Create account':'Sign in';
- $('#register').textContent=create?'Already have an account? Sign in':'First visit? Create your admin account';
- $('.login-card .help').textContent=create?'Choose a unique password with at least 12 characters. After creating your account, confirm the email before signing in.':'Only approved team accounts can access the dashboard. Create your account first if you have not set a password yet.';
+ authMode=mode;const create=mode==='create',recover=mode==='recover',reset=mode==='reset',form=$('#login-form');
+ $('.login-card h2').textContent=reset?'Set your new password.':recover?'Reset your password.':create?'Create your admin account.':'Welcome back.';
+ $('.login-card h2 + p').textContent=reset?'Choose and confirm a new password for your existing account.':recover?'We’ll email a secure link so you can choose a new password.':create?'Use your approved team email and choose a new password.':'Sign in with your approved SMA team account.';
+ const emailLabel=form.elements.email.closest('label'),passwordLabel=form.elements.password.closest('label');emailLabel.hidden=reset;form.elements.email.required=!reset;
+ passwordLabel.hidden=recover;passwordLabel.firstChild.textContent=create||reset?'New password':'Password';form.elements.password.required=!recover;
+ form.elements.password.autocomplete=create||reset?'new-password':'current-password';form.elements.password.minLength=create||reset?12:1;
+ confirmLabel.hidden=!(create||reset);form.elements.passwordConfirmation.required=create||reset;
+ form.querySelector('button[type="submit"]').textContent=reset?'Save new password':recover?'Send reset email':create?'Create account':'Sign in';
+ $('#register').textContent=create||recover||reset?'Back to sign in':'First visit? Create your admin account';forgot.hidden=mode!=='signin';
+ $('.login-card .help').textContent=reset?'Use at least 12 characters. This account is shared across apps in this Supabase project, so its password changes for those apps too.':recover?'Use your existing account email. This does not create a second account or change your access role.':create?'Choose a unique password with at least 12 characters. Creating an existing email again does not replace its password.':'Only approved team accounts can access the dashboard. Use Forgot your password if this email already has an account.';
  if(clearStatus)$('#login-status').textContent='';
- const url=new URL(location.href);if(create)url.searchParams.set('mode','create');else url.searchParams.delete('mode');history.replaceState(null,'',url.pathname+url.search);
+ const url=new URL(location.href);if(mode==='signin')url.searchParams.delete('mode');else url.searchParams.set('mode',mode);history.replaceState(null,'',url.pathname+url.search);
 }
 setAuthMode(authMode);
-$('#register').addEventListener('click',()=>setAuthMode(authMode==='create'?'signin':'create'));
+if(recoveryError)$('#login-status').textContent='This verification link is invalid or expired. Request a new password-reset email.';
+forgot.addEventListener('click',()=>setAuthMode('recover'));
+$('#register').addEventListener('click',()=>setAuthMode(authMode==='signin'?'create':'signin'));
 $('#login-form').addEventListener('submit',async event=>{
- event.preventDefault();const form=event.currentTarget,button=form.querySelector('button[type="submit"]'),create=authMode==='create';
- if(create&&form.elements.password.value!==form.elements.passwordConfirmation.value){$('#login-status').textContent='The passwords do not match. Please enter them again.';form.elements.passwordConfirmation.focus();return;}
- button.disabled=true;$('#register').disabled=true;$('#login-status').textContent=create?'Creating your account…':'Signing in…';
+ event.preventDefault();const form=event.currentTarget,button=form.querySelector('button[type="submit"]'),create=authMode==='create',recover=authMode==='recover',reset=authMode==='reset';
+ if((create||reset)&&form.elements.password.value!==form.elements.passwordConfirmation.value){$('#login-status').textContent='The passwords do not match. Please enter them again.';form.elements.passwordConfirmation.focus();return;}
+ button.disabled=true;$('#register').disabled=true;forgot.disabled=true;$('#login-status').textContent=reset?'Updating your password…':recover?'Sending your reset email…':create?'Creating your account…':'Signing in…';
  try{
+  if(recover){await auth('recover?redirect_to='+encodeURIComponent(config.siteUrl+'/admin?mode=reset'),{email:form.elements.email.value.trim()});$('#login-status').textContent='If this email has an account, a reset link has been requested. Check your inbox and spam folder, then open the newest link. No additional SMA admin approval is needed for an already approved owner.';return;}
+  if(reset){
+   const user=await auth('user',undefined,{method:'GET',authenticated:true});if(!user?.id||!user.email_confirmed_at)throw new Error('Your reset session could not be verified. Request a new reset email.');
+   await auth('user',{password:form.elements.password.value},{method:'PUT',authenticated:true});
+   session=null;sessionStorage.removeItem('sma-dashboard-session');form.elements.email.value=user.email||'';form.elements.password.value='';form.elements.passwordConfirmation.value='';setAuthMode('signin');$('#login-status').textContent='Your password has been updated. Sign in with your new password.';return;
+  }
   const data=await auth(create?'signup':'token?grant_type=password',{email:form.elements.email.value.trim(),password:form.elements.password.value});
   form.elements.password.value='';form.elements.passwordConfirmation.value='';
   if(data.access_token){remember({...data,expires_at:Math.floor(Date.now()/1000)+data.expires_in});await start();$('#login-status').textContent='';}
-  else {$('#login-status').textContent='Check your email to confirm your account. After confirmation, choose “Already have an account? Sign in” below and use your new password. If an account already exists for this email, sign in with that account.';}
- }catch(e){$('#login-status').textContent=!create&&/invalid login credentials/i.test(e.message)?'That email and password were not accepted. If you have not created your account yet, choose “First visit? Create your admin account” below.':e.message;}
- finally{button.disabled=false;$('#register').disabled=false;}
+  else {$('#login-status').textContent='If this is a new account, check your email to confirm it. If you used this email before, its existing password has not changed. Go back to sign in and use Forgot your password if needed.';}
+ }catch(e){$('#login-status').textContent=!create&&/invalid login credentials/i.test(e.message)?'That email and password were not accepted. Use Forgot your password if this email already has an account.':e.message;}
+ finally{button.disabled=false;$('#register').disabled=false;forgot.disabled=false;}
 });
 $('#logout').addEventListener('click',async()=>{try{await fetch(config.url+'/auth/v1/logout',{method:'POST',headers:{apikey:config.publishableKey,Authorization:'Bearer '+await token()}});}finally{showLogin();}});
 document.querySelectorAll('[data-tab]').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.tab)));
@@ -98,4 +116,4 @@ async function mediaList(){
 }
 function integrations(){const items=[['Website analytics','Connected','Page views, sessions and explicit CTA events after visitor consent.',true],['Website inquiry form','Connected','New Contact page inquiries are stored in the private SMA lead queue.',true],['Content & media','Connected','Owner-published content is served on the live website. Drafts remain private.',true],['Atlas appointment synchronization','Not connected','The calendar works on the website. Importing actual appointments needs the SMA HighLevel location and an authorized API connection.',false],['Kate’s hosted training','Provider access needed','The website panel loads the existing agent. We need the owning Thinkrr workspace, agent ID and edit/publish access for knowledge, speech and booking tools.',false]];$('#view').innerHTML=panel('Connection health',items.map(([title,label,text,ok])=>`<div class="integration"><div><strong>${esc(title)}</strong><p>${esc(text)}</p></div><span class="badge ${ok?'connected':'pending'}">${esc(label)}</span></div>`).join(''))+panel('Kate’s behavior checklist',`<p>Answer from SMA’s current service knowledge. Ask one useful question at a time. Confirm an email character by character and phone numbers in small groups. Replace corrected details instead of repeating a wrong guess. After two failed attempts, offer direct entry in the booking calendar.</p><p>Those instructions must be installed and evaluated in the provider. This dashboard does not claim to have changed the hosted agent’s recognition or voice settings.</p><div class="link-row"><a href="/demo" target="_blank" rel="noopener">Open the live demo ↗</a><a href="/contact" target="_blank" rel="noopener">Open the calendar ↗</a></div>`);}
 async function settings(){const audit=await api('audit');let members=[];if(profile.role==='owner')members=await api('members');$('#view').innerHTML=(profile.role==='owner'?panel('Team access',table(['Email','Role'],members.map(m=>[esc(m.email),esc(m.role)]))+`<form id="member-form"><div class="form-grid"><label>Approved team email<input name="email" type="email" required></label><label>Role<select name="role"><option value="viewer">Viewer — reports only</option><option value="editor">Editor — drafts, leads & uploads</option><option value="owner">Owner — publish & manage access</option></select></label></div><button type="submit">Grant team access</button><p class="help">Only add people authorized to see private leads. This grants access but does not send an invitation or transfer the Supabase project. They create and confirm their own login.</p></form>`):'')+panel('Recent activity',audit.length?table(['When','Account','Action','Target'],audit.map(a=>[esc(date(a.created_at)),esc(a.actor),esc(a.action),esc(a.target)])):empty('Content and lead changes will be recorded here.'))+panel('Data notes','<p class="muted">SMA data uses isolated tables in the shared Supabase project. Public images are stored in the separate sma-media bucket. Private leads, drafts and audit data require approved membership. Browser analytics stores no contact fields or call transcripts.</p>');if($('#member-form'))$('#member-form').onsubmit=async event=>{event.preventDefault();try{await api('add-member',{email:event.currentTarget.elements.email.value,role:event.currentTarget.elements.role.value});await settings();status('Team access added. The person must create and confirm their own login.');}catch(e){status(e.message,true);}};}
-if(session){try{await start();}catch(e){showLogin();$('#login-status').textContent=e.message;}}else if(!adminEntry){location.replace('/admin');}
+if(session&&!['recover','reset'].includes(authMode)){try{await start();}catch(e){showLogin();$('#login-status').textContent=e.message;}}else if(!adminEntry){location.replace('/admin');}

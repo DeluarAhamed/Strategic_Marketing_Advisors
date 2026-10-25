@@ -14,7 +14,7 @@
     "build": "node scripts/build.mjs",
     "check": "node scripts/check-links.mjs",
     "check:seo": "node scripts/check-seo.mjs",
-    "test": "npm run build && npm run check && npm run check:seo && node --test tests/backend.test.mjs",
+    "test": "npm run build && npm run check && npm run check:seo && node --test tests/backend.test.mjs tests/auth-flow.test.mjs",
     "dev": "npx serve . -l 3000"
   },
   "dependencies": {
