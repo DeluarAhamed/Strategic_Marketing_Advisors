@@ -113,7 +113,7 @@ writeText(homePath, $home.html());
 const htmlFiles = [];
 function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if ([".git", ".sanity", "dist", "sanity-dist", "sanity-hosted-build", "studio", "static", "node_modules", "uploads", "admin", "partials", "work", "docs"].includes(entry.name)) continue;
+    if ([".git", ".sanity", "dist", "runtime-templates", "dashboard", "sanity-dist", "sanity-hosted-build", "studio", "static", "node_modules", "uploads", "admin", "partials", "work", "docs"].includes(entry.name)) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(full);
     else if (entry.name.endsWith(".html")) htmlFiles.push(full);

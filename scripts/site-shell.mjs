@@ -24,7 +24,7 @@ export function applySiteShell($, relative) {
   $('main').first().before(header);
   $('body > footer').remove();
   $('main').first().after(footer);
-  $('#chatLaunch,#chatPanel,.chat-launch,.chat-panel,script[src$="chat.js"],script[src*="cdnjs.cloudflare.com"],script[src$="gsap-init.js"],script[src$="hero-scene.js"],script[src$="site-ui.js"],#sma-consent-root,#booking-dialog').remove();
+  $('#chatLaunch,#chatPanel,.chat-launch,.chat-panel,script[src$="chat.js"],script[src*="cdnjs.cloudflare.com"],script[src$="gsap-init.js"],script[src$="hero-scene.js"],script[src$="site-ui.js"],script[src$="site-analytics.js"],#sma-consent-root,#booking-dialog').remove();
   $('script').filter((i,e)=>!$(e).attr('src')&&$(e).text().includes('__SMA_BASE')).remove();
   $('script[src="https://d2cqc7yqzf8c8f.cloudfront.net/web-widget.js"],[data-widget-key]').remove();
   $('head link[href$="site-refresh.css"]').remove();
@@ -52,4 +52,5 @@ export function applySiteShell($, relative) {
     $(e).find('p').first().text('Explore AI Voice Agents and VedaKosa with a founder-led strategy call.');
   });
   applyVisualShell($,relative);
+  $('body').append('<script src="/site-analytics.js" defer></script>');
 }

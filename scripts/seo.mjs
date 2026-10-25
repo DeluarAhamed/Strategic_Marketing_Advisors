@@ -108,11 +108,10 @@ export function applySeo(files, articles) {
     if(!utility)$('head').append(`<script type="application/ld+json">${JSON.stringify({'@context':'https://schema.org','@graph':graph}).replace(/</g,'\\u003c')}</script>`);
     writeText(file,$.html());
   }
-  writeText(path.join(root,'robots.txt'),`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /studio\nDisallow: /static/\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
+  writeText(path.join(root,'robots.txt'),`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /dashboard\nDisallow: /api/\nDisallow: /studio\nDisallow: /static/\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
   const admin='admin/index.html';
   if(fs.existsSync(admin)){
     const $=cheerio.load(fs.readFileSync(admin,'utf8'));
     $('meta[name="robots"]').remove();$('head').append('<meta name="robots" content="noindex, nofollow">');writeText(admin,$.html());
   }
 }
-

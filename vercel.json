@@ -8,6 +8,70 @@
     {
       "source": "/studio/:path*",
       "destination": "/studio"
+    },
+    {
+      "source": "/",
+      "destination": "/api/render?route=/"
+    },
+    {
+      "source": "/services",
+      "destination": "/api/render?route=/services"
+    },
+    {
+      "source": "/services/:path*",
+      "destination": "/api/render?route=/services/:path*"
+    },
+    {
+      "source": "/about",
+      "destination": "/api/render?route=/about"
+    },
+    {
+      "source": "/about/:path*",
+      "destination": "/api/render?route=/about/:path*"
+    },
+    {
+      "source": "/resources",
+      "destination": "/api/render?route=/resources"
+    },
+    {
+      "source": "/resources/:path*",
+      "destination": "/api/render?route=/resources/:path*"
+    },
+    {
+      "source": "/articles/:slug",
+      "destination": "/api/render?route=/articles/:slug"
+    },
+    {
+      "source": "/demo",
+      "destination": "/api/render?route=/demo"
+    },
+    {
+      "source": "/contact",
+      "destination": "/api/render?route=/contact"
+    },
+    {
+      "source": "/blog",
+      "destination": "/api/render?route=/blog"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/api/render?route=/privacy"
+    },
+    {
+      "source": "/terms",
+      "destination": "/api/render?route=/terms"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/render?route=/sitemap.xml"
+    },
+    {
+      "source": "/admin",
+      "destination": "/dashboard"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/dashboard"
     }
   ],
   "headers": [
@@ -43,6 +107,27 @@
         {
           "key": "Permissions-Policy",
           "value": "camera=(), microphone=(self), geolocation=()"
+        }
+      ]
+    },
+    {
+      "source": "/dashboard/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://bqifzwpdgwkjfphkrjgl.supabase.co; connect-src 'self' https://bqifzwpdgwkjfphkrjgl.supabase.co; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
         }
       ]
     }
@@ -87,6 +172,202 @@
       "source": "/services/executive-consulting",
       "destination": "/services/vedakosa",
       "permanent": true
+    },
+    {
+      "source": "/services/google-ads.html",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/services/logo-brand-kit.html",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/services/web-design.html",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/services/reputation-management.html",
+      "destination": "/services/ai-visibility",
+      "permanent": true
+    },
+    {
+      "source": "/services/gbp-audit.html",
+      "destination": "/services/ai-visibility",
+      "permanent": true
+    },
+    {
+      "source": "/services/seo-local.html",
+      "destination": "/services/ai-visibility",
+      "permanent": true
+    },
+    {
+      "source": "/services/ai-automation.html",
+      "destination": "/services/vedakosa",
+      "permanent": true
+    },
+    {
+      "source": "/services/executive-consulting.html",
+      "destination": "/services/vedakosa",
+      "permanent": true
+    },
+    {
+      "source": "/about/faq.html",
+      "destination": "/about/faq",
+      "permanent": true
+    },
+    {
+      "source": "/about/founders.html",
+      "destination": "/about/founders",
+      "permanent": true
+    },
+    {
+      "source": "/about/philosophy.html",
+      "destination": "/about/philosophy",
+      "permanent": true
+    },
+    {
+      "source": "/about/testimonials.html",
+      "destination": "/about/testimonials",
+      "permanent": true
+    },
+    {
+      "source": "/about/veteran-owned.html",
+      "destination": "/about/veteran-owned",
+      "permanent": true
+    },
+    {
+      "source": "/about.html",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/articles/best-mascots.html",
+      "destination": "/articles/best-mascots",
+      "permanent": true
+    },
+    {
+      "source": "/articles/books.html",
+      "destination": "/articles/books",
+      "permanent": true
+    },
+    {
+      "source": "/articles/business-character.html",
+      "destination": "/articles/business-character",
+      "permanent": true
+    },
+    {
+      "source": "/articles/checking-givens.html",
+      "destination": "/articles/checking-givens",
+      "permanent": true
+    },
+    {
+      "source": "/articles/direct-mail.html",
+      "destination": "/articles/direct-mail",
+      "permanent": true
+    },
+    {
+      "source": "/articles/finding-balance.html",
+      "destination": "/articles/finding-balance",
+      "permanent": true
+    },
+    {
+      "source": "/articles/local-seo-checklist.html",
+      "destination": "/articles/local-seo-checklist",
+      "permanent": true
+    },
+    {
+      "source": "/articles/perception.html",
+      "destination": "/articles/perception",
+      "permanent": true
+    },
+    {
+      "source": "/articles/phone-etiquette.html",
+      "destination": "/articles/phone-etiquette",
+      "permanent": true
+    },
+    {
+      "source": "/articles/repeat-business.html",
+      "destination": "/articles/repeat-business",
+      "permanent": true
+    },
+    {
+      "source": "/articles/shoestring-budget.html",
+      "destination": "/articles/shoestring-budget",
+      "permanent": true
+    },
+    {
+      "source": "/blog.html",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/demo.html",
+      "destination": "/demo",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/privacy.html",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/resources/marketing-resources.html",
+      "destination": "/resources/marketing-resources",
+      "permanent": true
+    },
+    {
+      "source": "/resources/skool-community.html",
+      "destination": "/resources/skool-community",
+      "permanent": true
+    },
+    {
+      "source": "/resources.html",
+      "destination": "/resources",
+      "permanent": true
+    },
+    {
+      "source": "/services/ai-visibility.html",
+      "destination": "/services/ai-visibility",
+      "permanent": true
+    },
+    {
+      "source": "/services/ai-voice-agents.html",
+      "destination": "/services/ai-voice-agents",
+      "permanent": true
+    },
+    {
+      "source": "/services/vedakosa.html",
+      "destination": "/services/vedakosa",
+      "permanent": true
+    },
+    {
+      "source": "/services.html",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/terms.html",
+      "destination": "/terms",
+      "permanent": true
     }
-  ]
+  ],
+  "functions": {
+    "api/render.js": {
+      "includeFiles": "runtime-templates/**",
+      "maxDuration": 15
+    }
+  }
 }

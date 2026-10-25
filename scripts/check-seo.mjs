@@ -30,7 +30,8 @@ for(const file of files){
   if(file==='contact.html'){
     assert.equal($('main iframe[data-booking-src]').attr('data-booking-src'),calendar,'Contact uses the supplied calendar');
     assert.equal($('main iframe[data-booking-src]').attr('src'),undefined,'Calendar is not loaded before consent');
-    assert.equal($('form').length,0,'Old contact/email handoff forms removed');
+    assert.equal($('form[data-sma-lead-form]').length,1,'Contact has the connected private inquiry form');
+    assert.equal($('form[data-email-handoff],form[data-netlify]').length,0,'Old contact/email handoff forms removed');
   }
   if(file==='about/faq.html')assert.ok($('.faq-group details').length>=20,'FAQ includes the supplied topics');
   $('a').each((i,e)=>{if(/^book\b|^(schedule|request)\b.*(call|consultation|appointment|conversation)/i.test($(e).text().trim()))assert.equal($(e).attr('href'),calendar,`${file}: booking uses the real calendar`);});

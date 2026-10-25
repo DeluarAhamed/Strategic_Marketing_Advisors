@@ -1,12 +1,12 @@
 (function () {
   'use strict';
   var key = 'sma-consent-v1';
-  var prefs = { voice: false, booking: false };
+  var prefs = { voice: false, booking: false, analytics: false };
   var recorded = false;
   try {
     var stored = JSON.parse(localStorage.getItem(key) || 'null');
-    if (stored && stored.version === 1 && Date.now() - stored.saved < 15552000000) {
-      prefs.voice = stored.voice === true; prefs.booking = stored.booking === true; recorded = true;
+    if (stored && (stored.version === 1 || stored.version === 2) && Date.now() - stored.saved < 15552000000) {
+      prefs.voice = stored.voice === true; prefs.booking = stored.booking === true; prefs.analytics = stored.version === 2 && stored.analytics === true; recorded = stored.version === 2;
     }
   } catch (_) { /* Continue with optional services disabled. */ }
   var root = document.getElementById('sma-consent-root');
@@ -15,24 +15,26 @@
   var bookingOpener = null;
 
   function persist(next) {
-    var revoked = (prefs.voice && !next.voice) || (prefs.booking && !next.booking);
-    prefs = { voice: !!next.voice, booking: !!next.booking };
+    var revoked = (prefs.voice && !next.voice) || (prefs.booking && !next.booking) || (prefs.analytics && !next.analytics);
+    prefs = { voice: !!next.voice, booking: !!next.booking, analytics: !!next.analytics };
     recorded = true;
-    try { localStorage.setItem(key, JSON.stringify({ version: 1, saved: Date.now(), voice: prefs.voice, booking: prefs.booking })); } catch (_) {}
+    try { localStorage.setItem(key, JSON.stringify({ version: 2, saved: Date.now(), voice: prefs.voice, booking: prefs.booking, analytics: prefs.analytics })); } catch (_) {}
     if (root) root.replaceChildren();
+    window.dispatchEvent(new CustomEvent('sma:consent',{detail:{analytics:prefs.analytics}}));
     if (revoked) { window.location.reload(); return; }
     applyPreferences();
   }
   function notice(showControls, focus) {
     if (!root) return;
-    root.innerHTML = '<section class="consent-banner" role="dialog" aria-modal="false" aria-labelledby="consent-title"><h2 id="consent-title">Your privacy choices</h2><p>We use necessary browser storage to remember your choices. With your permission, we load our third-party AI voice widget and booking calendar, which may use cookies or similar technologies and process the information you share. They stay off until you choose. <a href="/privacy">Read our privacy &amp; cookie notice</a>.</p><div class="consent-controls" ' + (showControls ? '' : 'hidden') + '><label><input type="checkbox" id="consent-voice"> AI voice widget</label><label><input type="checkbox" id="consent-booking"> Booking calendar</label><p>Necessary preference storage is always on. No advertising or analytics tools are currently installed.</p></div><div class="consent-actions"><button type="button" data-reject>Reject optional</button><button type="button" data-preferences>' + (showControls ? 'Save choices' : 'Choose settings') + '</button><button type="button" data-accept>Accept optional</button></div></section>';
+    root.innerHTML = '<section class="consent-banner" role="dialog" aria-modal="false" aria-labelledby="consent-title"><h2 id="consent-title">Your privacy choices</h2><p>We use necessary browser storage to remember your choices. With your permission, we load our AI voice widget and booking calendar, and measure page views and selected clicks to improve the website. Optional services stay off until you choose. <a href="/privacy">Read our privacy &amp; cookie notice</a>.</p><div class="consent-controls" ' + (showControls ? '' : 'hidden') + '><label><input type="checkbox" id="consent-voice"> AI voice widget</label><label><input type="checkbox" id="consent-booking"> Booking calendar</label><label><input type="checkbox" id="consent-analytics"> Website analytics</label><p>Necessary preference storage is always on. Analytics excludes contact fields and call transcripts. No advertising trackers are installed.</p></div><div class="consent-actions"><button type="button" data-reject>Reject optional</button><button type="button" data-preferences>' + (showControls ? 'Save choices' : 'Choose settings') + '</button><button type="button" data-accept>Accept optional</button></div></section>';
     root.querySelector('#consent-voice').checked = prefs.voice;
     root.querySelector('#consent-booking').checked = prefs.booking;
-    root.querySelector('[data-reject]').addEventListener('click', function () { persist({ voice: false, booking: false }); });
-    root.querySelector('[data-accept]').addEventListener('click', function () { persist({ voice: true, booking: true }); });
+    root.querySelector('#consent-analytics').checked = prefs.analytics;
+    root.querySelector('[data-reject]').addEventListener('click', function () { persist({ voice: false, booking: false, analytics: false }); });
+    root.querySelector('[data-accept]').addEventListener('click', function () { persist({ voice: true, booking: true, analytics: true }); });
     root.querySelector('[data-preferences]').addEventListener('click', function () {
       if (!showControls) { notice(true, true); return; }
-      persist({ voice: root.querySelector('#consent-voice').checked, booking: root.querySelector('#consent-booking').checked });
+      persist({ voice: root.querySelector('#consent-voice').checked, booking: root.querySelector('#consent-booking').checked, analytics: root.querySelector('#consent-analytics').checked });
     });
     if (focus) root.querySelector(showControls ? '#consent-voice' : '[data-reject]').focus();
   }
@@ -96,8 +98,8 @@
   createVoiceDock();
   document.querySelectorAll('[data-open-voice]').forEach(function(button){button.addEventListener('click',function(){var dock=document.querySelector('.voice-dock');dock.open=true;dock.querySelector('.voice-panel__close').focus();});});
   document.querySelectorAll('[data-cookie-settings]').forEach(function (button) { button.addEventListener('click', function () { notice(true, true); }); });
-  document.querySelectorAll('[data-enable-voice]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: true, booking: prefs.booking }); var dock=document.querySelector('.voice-dock'); if(dock)dock.open=true; }); });
-  document.querySelectorAll('[data-enable-booking]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: prefs.voice, booking: true }); }); });
+  document.querySelectorAll('[data-enable-voice]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: true, booking: prefs.booking, analytics: prefs.analytics }); var dock=document.querySelector('.voice-dock'); if(dock)dock.open=true; }); });
+  document.querySelectorAll('[data-enable-booking]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: prefs.voice, booking: true, analytics: prefs.analytics }); }); });
   document.querySelectorAll('[data-booking-open]').forEach(function (link) {
     link.addEventListener('click', function (event) {
       if (!bookingDialog || typeof bookingDialog.showModal !== 'function' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;

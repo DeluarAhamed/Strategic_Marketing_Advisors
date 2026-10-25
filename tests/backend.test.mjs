@@ -1,0 +1,27 @@
+import {test,beforeEach} from 'node:test';
+import assert from 'node:assert/strict';
+import {renderContent} from '../lib/render-content.mjs';
+const realFetch=globalThis.fetch;
+globalThis.Deno={env:{get:name=>({SUPABASE_URL:'https://test.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'server-test-key',SUPABASE_ANON_KEY:'anon-test-key'}[name])},serve:()=>{}};
+const {handleRequest}=await import('../supabase/functions/sma-api/index.ts');
+let role='owner',confirmed=true,member=true,writes=[];
+beforeEach(()=>{role='owner';confirmed=true;member=true;writes=[];globalThis.fetch=async(url,options={})=>{
+ const s=String(url);if(s.endsWith('/auth/v1/user'))return Response.json({email:'owner@example.com',email_confirmed_at:confirmed?'2026-10-25':null});
+ if(s.includes('/sma_members?'))return Response.json(member?[{email:'owner@example.com',role}]:[]);
+ if(s.includes('/rpc/sma_rate_allowed'))return Response.json(true);
+ if(options.method==='POST')writes.push({url:s,body:JSON.parse(options.body)});
+ return Response.json([]);
+};});
+const request=(action,body,origin='https://strategic-marketing-advisors.vercel.app')=>new Request('https://test.supabase.co/functions/v1/sma-api?action='+action,{method:'POST',headers:{Origin:origin,Authorization:'Bearer fake-unit-token','Content-Type':'application/json'},body:JSON.stringify(body)});
+test('rejects an unapproved web origin before any write',async()=>{const r=await handleRequest(request('lead',{},'https://unrelated.example'));assert.equal(r.status,403);assert.equal(writes.length,0);});
+test('does not accept analytics without an explicit consent flag',async()=>{const r=await handleRequest(request('event',{consent:false}));assert.equal(r.status,400);assert.equal(writes.length,0);});
+test('analytics writes only approved non-contact fields',async()=>{const r=await handleRequest(request('event',{id:crypto.randomUUID(),session_id:crypto.randomUUID(),event:'page_view',path:'/about',device:'mobile',consent:true,email:'private@example.com',phone:'1234567890'}));assert.equal(r.status,200);assert.equal(writes.length,1);assert.equal('email' in writes[0].body,false);assert.equal('phone' in writes[0].body,false);});
+test('an unconfirmed account cannot use the private API',async()=>{confirmed=false;const r=await handleRequest(request('publish',{path:'/',revision:1}));assert.equal(r.status,403);assert.equal(writes.length,0);});
+test('a signed-in account without membership cannot use the private API',async()=>{member=false;const r=await handleRequest(request('lead-update',{id:crypto.randomUUID(),stage:'won'}));assert.equal(r.status,403);assert.equal(writes.length,0);});
+test('a viewer cannot update leads',async()=>{role='viewer';const r=await handleRequest(request('lead-update',{id:crypto.randomUUID(),stage:'won'}));assert.equal(r.status,403);assert.equal(writes.length,0);});
+test('a report viewer cannot read the private lead queue',async()=>{role='viewer';const r=await handleRequest(new Request('https://test.supabase.co/functions/v1/sma-api?action=leads',{headers:{Origin:'https://strategic-marketing-advisors.vercel.app',Authorization:'Bearer unit-test'}}));assert.equal(r.status,403);});
+test('an editor cannot publish to the live website',async()=>{role='editor';const r=await handleRequest(request('publish',{path:'/',revision:1}));assert.equal(r.status,403);assert.equal(writes.length,0);});
+test('rejects script uploads before sending anything to storage',async()=>{const r=await handleRequest(request('upload',{filename:'bad.svg',alt:'An unsafe image',data:Buffer.from('<svg onload="alert(1)"></svg>').toString('base64')}));assert.equal(r.status,400);assert.equal(writes.length,0);});
+test('server-rendered content escapes text and keeps metadata synchronized',()=>{const html='<html><head><title>Old</title><meta name="description"><link rel="canonical"><meta property="og:title"></head><body><main><section class="phero"><h1>Old</h1><p class="lead-xl"></p></section></main></body></html>';const row={kind:'page',published_at:'2026-10-25',content:{title:'A useful title',description:'Clear description',heading:'<script>alert(1)</script>',intro:'Helpful text',sections:[{heading:'<img src=x onerror=alert(1)>',body:'<iframe>bad</iframe>'}]}};const out=renderContent(html,row,'/about',[]);assert.ok(out.includes('&lt;script&gt;'));assert.ok(!out.includes('<iframe>'));assert.ok(out.includes('https://strategic-marketing-advisors.vercel.app/about'));assert.ok(out.includes('content="A useful title"'));});
+test('a new article replaces template heading and introduction even when optional fields are blank',()=>{const html='<html><head><title>Old</title><meta name="description"><link rel="canonical"></head><body><main><section class="phero"><h1>Old article title</h1><p class="lead-xl">Old introduction</p></section><div class="prose">Old body</div><div class="article__byline"><img src="/old-author.png"><span class="semibold">Old author</span></div></main></body></html>';const out=renderContent(html,{kind:'article',published_at:'2026-10-25',content:{title:'New article',description:'A new description',body:'A useful article body.',author:'Strategic Marketing Advisors',sections:[]}},'/articles/new-article');assert.ok(out.includes('<h1>New article</h1>'));assert.ok(!out.includes('Old introduction'));assert.ok(out.includes('src="/assets/logo.svg"'));});
+process.on('exit',()=>{globalThis.fetch=realFetch;});

@@ -36,7 +36,7 @@ export function applyVisualShell($,relative){
       card.find('p').not('.focus-card__label').first().text(i===0?'When you are on a job, helping a customer or closed for the day, your next caller still needs an answer. Give routine calls a clear path to an appointment or a person.':'Too many tools and scattered information slow everyone down. VedaKosa brings your business knowledge and agreed workflows into one practical way of working.');
     });
   }
-  if(['index.html','about.html','about/founders.html','about/veteran-owned.html','services.html','services/ai-voice-agents.html','services/vedakosa.html','about/philosophy.html'].includes(relative)){
+  if(['index.html','about.html','about/founders.html','about/veteran-owned.html','about/testimonials.html','services.html','services/ai-voice-agents.html','services/vedakosa.html','about/philosophy.html'].includes(relative)){
     $('[data-career-band]').remove();
     $('.bigstats').closest('section').remove();
     if(relative==='index.html')$('.focus-split:has(img[src="/assets/images/david-and-mary-founders.webp"])').closest('section').after(band());
