@@ -3,7 +3,8 @@
 ## Owner and entry point
 
 - Website: https://strategic-marketing-advisors.vercel.app/
-- Dashboard: https://strategic-marketing-advisors.vercel.app/dashboard/
+- Sign-in popup: https://strategic-marketing-advisors.vercel.app/admin
+- Authenticated dashboard: https://strategic-marketing-advisors.vercel.app/dashboard
 - The initial owner email approved in the conversation is stored privately in `sma_members`.
 - Use the first-visit action to create and confirm your own account, then sign in. Do not send passwords through chat. A confirmed existing account in this Supabase project can sign in directly.
 - The shared Supabase project has email confirmation enabled. Its email delivery configuration and limits apply; they were not changed for the other application.
