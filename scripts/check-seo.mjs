@@ -17,20 +17,25 @@ for(const file of files){
   assert.ok($('title').text().trim(),`${file}: title`);
   assert.equal($('meta[name="description"]').length,1,`${file}: one description`);
   assert.equal($('meta[property="og:title"]').attr('content'),$('title').text(),`${file}: social title matches`);
-  assert.equal($('.site-header').length,1,`${file}: one shared navigation`);
-  assert.equal($('.site-footer').length,1,`${file}: one shared footer`);
+  assert.equal($('header[data-site-header]').length,1,`${file}: one shared navigation`);
+  assert.equal($('footer[data-site-footer]').length,1,`${file}: one shared footer`);
   assert.equal($('#chatLaunch,#chatPanel,script[src$="chat.js"]').length,0,`${file}: old chat removed`);
   assert.equal($('script[src="https://d2cqc7yqzf8c8f.cloudfront.net/web-widget.js"]').length,0,`${file}: widget requires consent`);
   assert.ok($('script[src$="site-ui.js"]').length,`${file}: consent loader`);
-  assert.ok(!/Google Ads|Brand Kit|Web Design|Reputation Management/.test($('.site-header').text()),`${file}: retired services are not promoted`);
-  assert.equal($('.site-header .desktop-nav .nav-drop').last().find('.nav-drop__panel > div > a').length,3,`${file}: three simple resource links`);
+  assert.ok(!/Google Ads|Brand Kit|Web Design|Reputation Management/.test($('header[data-site-header]').text()),`${file}: retired services are not promoted`);
+  assert.equal($('#mega-resources .mega__menu .mega__link').length,3,`${file}: three simple resource links`);
+  assert.equal($('#booking-dialog').length,1,`${file}: one on-site booking dialog`);
+  assert.equal($('#booking-dialog iframe').attr('src'),undefined,`${file}: hidden calendar is not loaded in the source`);
+  $('a[data-booking-open]').each((i,e)=>assert.equal($(e).attr('href'),calendar,`${file}: booking popup has a working calendar fallback`));
   if(file==='contact.html'){
-    assert.equal($('iframe[data-booking-src]').attr('data-booking-src'),calendar,'Contact uses the supplied calendar');
-    assert.equal($('iframe[data-booking-src]').attr('src'),undefined,'Calendar is not loaded before consent');
+    assert.equal($('main iframe[data-booking-src]').attr('data-booking-src'),calendar,'Contact uses the supplied calendar');
+    assert.equal($('main iframe[data-booking-src]').attr('src'),undefined,'Calendar is not loaded before consent');
     assert.equal($('form').length,0,'Old contact/email handoff forms removed');
   }
   if(file==='about/faq.html')assert.ok($('.faq-group details').length>=20,'FAQ includes the supplied topics');
-  $('a').each((i,e)=>{if(/^book\b|\b(book|schedule|request).*(call|consultation|appointment|conversation)/i.test($(e).text().trim()))assert.equal($(e).attr('href'),calendar,`${file}: booking uses the real calendar`);});
+  $('a').each((i,e)=>{if(/^book\b|^(schedule|request)\b.*(call|consultation|appointment|conversation)/i.test($(e).text().trim()))assert.equal($(e).attr('href'),calendar,`${file}: booking uses the real calendar`);});
+  assert.equal($('#mega-services .mega__feat').attr('href'),'/demo',`${file}: featured service leads to the voice demo`);
+  $('a[href="'+calendar+'"]').not('[data-booking-external]').filter((i,e)=>!$(e).closest('noscript').length&&!/open calendar directly/i.test($(e).text())).each((i,e)=>assert.ok($(e).is('[data-booking-open]'),`${file}: booking CTA opens on site`));
   if(utility){assert.match($('meta[name="robots"]').attr('content'),/noindex/);continue;}
   const url=siteUrl+canonicalPath(file);
   assert.equal($('link[rel="canonical"]').length,1,`${file}: one canonical`);

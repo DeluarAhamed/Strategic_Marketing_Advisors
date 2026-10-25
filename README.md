@@ -35,7 +35,9 @@ The configured canonical origin is `https://strategic-marketing-advisors.vercel.
 
 The contact page embeds the supplied Atlas booking calendar after visitor consent. All call/consultation CTAs link directly to that same calendar. The old email-handoff forms and automated chat are no longer used on current pages. Newsletter subscriptions take place on LocalPromoVault.
 
-`scripts/site-shell.mjs` maintains the shared navigation/footer, booking destination, and retired service routes. The two signature services are AI Voice Agents and VedaKosa; AI Visibility is supporting work for those clients. The old broad service routes redirect through `vercel.json` and are excluded from the sitemap.
+`scripts/site-shell.mjs` loads the shared original-design navigation/footer from `partials/site-header.html` and `partials/site-footer.html`, maintains the booking destination, and retires old service routes. The two signature services are AI Voice Agents and VedaKosa; AI Visibility is supporting work for those clients. The old broad service routes redirect through `vercel.json` and are excluded from the sitemap.
+
+Booking CTAs keep the calendar URL as a no-JavaScript fallback and open an on-site dialog through `data-booking-open`. The dialog uses the same consent-gated calendar as Contact, loads it when opened, supports Escape/close and returns keyboard focus. The photographic homepage hero, trust tabs, founder portraits, full-width mega menus and testimonial wall use the earlier site's visual components while retaining the revised offer.
 
 `site-ui.js` remembers privacy preferences and only loads the voice widget and inline booking calendar after the relevant opt-in. The voice widget uses the supplied public key; its provider restricts configuration access by origin, so verify it on the production domain. No test should start a real call, grant microphone access or submit a booking without a separate reason to do so.
 

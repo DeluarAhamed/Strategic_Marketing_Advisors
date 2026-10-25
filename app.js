@@ -30,11 +30,12 @@
         nav.querySelectorAll(".m-row__toggle[aria-expanded='true']").forEach(function (b) {
           b.setAttribute("aria-expanded", "false");
           var sub = b.closest(".m-row").nextElementSibling;
-          if (sub && sub.classList.contains("m-sub")) sub.style.maxHeight = "";
+          if (sub && sub.classList.contains("m-sub")) { sub.style.maxHeight = ""; sub.inert = true; sub.setAttribute("aria-hidden", "true"); }
         });
       }
     });
     // accordion expand/collapse for sub-pages
+    nav.querySelectorAll(".m-sub").forEach(function (sub) { sub.inert = true; sub.setAttribute("aria-hidden", "true"); });
     nav.querySelectorAll(".m-row__toggle").forEach(function (btn) {
       btn.addEventListener("click", function (e) {
         e.preventDefault();
@@ -42,6 +43,8 @@
         if (!sub || !sub.classList.contains("m-sub")) return;
         var isOpen = btn.getAttribute("aria-expanded") === "true";
         btn.setAttribute("aria-expanded", isOpen ? "false" : "true");
+        sub.inert = isOpen;
+        sub.setAttribute("aria-hidden", isOpen ? "true" : "false");
         sub.style.maxHeight = isOpen ? "" : sub.scrollHeight + "px";
       });
     });

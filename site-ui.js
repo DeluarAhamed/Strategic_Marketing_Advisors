@@ -11,6 +11,8 @@
   } catch (_) { /* Continue with optional services disabled. */ }
   var root = document.getElementById('sma-consent-root');
   var voiceLoaded = false;
+  var bookingDialog = document.getElementById('booking-dialog');
+  var bookingOpener = null;
 
   function persist(next) {
     var revoked = (prefs.voice && !next.voice) || (prefs.booking && !next.booking);
@@ -78,8 +80,12 @@
     if (prefs.voice) loadVoice();
     document.querySelectorAll('[data-enable-voice]').forEach(function (button) { button.hidden = prefs.voice; });
     document.querySelectorAll('iframe[data-booking-src]').forEach(function (frame) {
-      if (prefs.booking) {
-        if (!frame.getAttribute('src')) frame.setAttribute('src', frame.dataset.bookingSrc);
+      if (prefs.booking && (!frame.closest('dialog') || frame.closest('dialog').open)) {
+        if (!frame.getAttribute('src')) {
+          var loading = document.createElement('p'); loading.className = 'calendar-loading'; loading.setAttribute('role','status'); loading.textContent = 'Loading the booking calendar…'; frame.before(loading);
+          frame.addEventListener('load',function(){loading.hidden=true;},{once:true});
+          frame.setAttribute('src', frame.dataset.bookingSrc);
+        }
         frame.hidden = false;
         var placeholder = frame.parentElement.querySelector('[data-booking-placeholder]');
         if (placeholder) placeholder.hidden = true;
@@ -89,13 +95,45 @@
   document.querySelectorAll('[data-cookie-settings]').forEach(function (button) { button.addEventListener('click', function () { notice(true, true); }); });
   document.querySelectorAll('[data-enable-voice]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: true, booking: prefs.booking }); }); });
   document.querySelectorAll('[data-enable-booking]').forEach(function (button) { button.addEventListener('click', function () { persist({ voice: prefs.voice, booking: true }); }); });
+  document.querySelectorAll('[data-booking-open]').forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      if (!bookingDialog || typeof bookingDialog.showModal !== 'function' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault(); bookingOpener = link;
+      document.querySelectorAll('.nav__item.is-expanded').forEach(function (item) { item.classList.remove('is-expanded'); item.querySelector('[data-mega-trigger]').setAttribute('aria-expanded', 'false'); });
+      var nav = document.getElementById('nav');
+      if (nav) { nav.classList.remove('is-open'); var toggle = document.getElementById('navToggle'); if(toggle)toggle.setAttribute('aria-expanded','false'); }
+      if (!bookingDialog.open) bookingDialog.showModal();
+      document.body.classList.add('booking-is-open');
+      applyPreferences();
+      document.getElementById('booking-title').focus();
+    });
+  });
+  if (bookingDialog) {
+    bookingDialog.querySelector('[data-booking-close]').addEventListener('click', function () { bookingDialog.close(); });
+    bookingDialog.addEventListener('close', function () { document.body.classList.remove('booking-is-open'); if(bookingOpener&&bookingOpener.getClientRects().length)bookingOpener.focus();else {var toggle=document.getElementById('navToggle');if(toggle)toggle.focus();} });
+    bookingDialog.addEventListener('click', function (event) { if(event.target===bookingDialog){var rect=bookingDialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)bookingDialog.close();} });
+  }
+  document.querySelectorAll('[data-mega-trigger]').forEach(function (trigger) {
+    trigger.addEventListener('click', function () {
+      var item = trigger.closest('.nav__item'); var open = true;
+      document.querySelectorAll('[data-mega-trigger]').forEach(function (other) { other.setAttribute('aria-expanded','false');other.closest('.nav__item').classList.remove('is-expanded'); });
+      item.classList.toggle('is-expanded',open);trigger.setAttribute('aria-expanded',String(open));
+    });
+    trigger.closest('.nav__item').addEventListener('pointerenter',function(event){if(event.pointerType==='touch')return;trigger.click();});
+    trigger.closest('.nav__item').addEventListener('pointerleave',function(event){if(!event.currentTarget.contains(document.activeElement)){event.currentTarget.classList.remove('is-expanded');trigger.setAttribute('aria-expanded','false');}});
+    trigger.closest('.nav__item').addEventListener('focusout',function(event){if(!event.currentTarget.contains(event.relatedTarget)){event.currentTarget.classList.remove('is-expanded');trigger.setAttribute('aria-expanded','false');}});
+  });
+  document.addEventListener('click', function(event){if(!event.target.closest('.nav__item'))document.querySelectorAll('[data-mega-trigger]').forEach(function(trigger){trigger.setAttribute('aria-expanded','false');trigger.closest('.nav__item').classList.remove('is-expanded');});});
   document.querySelectorAll('.nav-drop').forEach(function (item) {
     item.addEventListener('toggle', function () {
       if (item.open) document.querySelectorAll('.nav-drop').forEach(function (other) { if (other !== item) other.open = false; });
     });
   });
   document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape') document.querySelectorAll('.nav-drop,.mobile-menu').forEach(function (item) { item.open = false; });
+    if (event.key === 'Escape') {
+      document.querySelectorAll('.nav-drop,.mobile-menu').forEach(function (item) { item.open = false; });
+      document.querySelectorAll('[data-mega-trigger]').forEach(function(trigger){trigger.closest('.nav__item').classList.remove('is-expanded');trigger.setAttribute('aria-expanded','false');});
+    }
   });
   applyPreferences();
   if (!recorded) notice(false, false);
