@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import * as cheerio from 'cheerio';
 import { writeText } from './write-text.mjs';
+import { applySiteShell, retired } from './site-shell.mjs';
 
 export const seo = JSON.parse(fs.readFileSync(new URL('../content/seo.json', import.meta.url), 'utf8'));
 export const siteUrl = seo.siteUrl.replace(/\/$/, '');
@@ -16,8 +17,8 @@ export function applySeo(files, articles) {
     const relative = path.relative(root, file).replaceAll(path.sep, '/');
     const $ = cheerio.load(fs.readFileSync(file, 'utf8'));
     const article = articles.find(a => relative === `articles/${a.slug}.html`);
-    const utility = ['404.html', 'success.html'].includes(relative);
-    const [title, description] = seo.pages[relative] || [article ? `${article.title} | SMA` : $('title').text(), article?.description || $('meta[name="description"]').attr('content') || $('h1').text()];
+    const utility = ['404.html', 'success.html'].includes(relative) || !!retired[relative];
+    const [title, description] = retired[relative] ? ['Our Current AI Services | Strategic Marketing Advisors', 'Explore SMA’s focused offer: AI Voice Agents and VedaKosa, with supporting AI Visibility for core-service clients.'] : seo.pages[relative] || [article ? `${article.title} | SMA` : $('title').text(), article?.description || $('meta[name="description"]').attr('content') || $('h1').text()];
     const url = absolute(canonicalPath(relative));
     const image = absolute(article?.cardImage || 'assets/images/david-mary.png');
     $('title').text(title);
@@ -29,6 +30,7 @@ export function applySeo(files, articles) {
     for(const [key,value] of Object.entries({type:article?'article':'website',site_name:'Strategic Marketing Advisors',title,description,url,image,locale:'en_US','image:alt':article?.title || 'Mary and David Scarborough, Strategic Marketing Advisors'})) meta(`og:${key}`,value,true);
     for(const [key,value] of Object.entries({card:'summary_large_image',title,description,image,'image:alt':article?.title || 'Mary and David Scarborough, Strategic Marketing Advisors'})) meta(`twitter:${key}`,value);
     $('html').attr('lang','en-US');
+    applySiteShell($, relative);
     if (!$('link[href$="seo-content.css"]').length) $('head').append('<link rel="stylesheet" href="/seo-content.css">');
     if (!$('script[src$="form-handoff.js"]').length && $('form[data-netlify],form[data-email-handoff]').length) $('body').append('<script src="/form-handoff.js" defer></script>');
     if (!$('main').length && $('body > section').length) $('body > section').wrapAll('<main id="main-content"></main>');
@@ -58,16 +60,6 @@ export function applySeo(files, articles) {
       if(hero) $(e).attr({loading:'eager',fetchpriority:'high'});
       else if(!$(e).closest('header').length) $(e).attr({loading:'lazy',decoding:'async'});
     });
-    if(relative==='index.html'){
-      const localGuide=articles.find(a=>a.slug==='local-seo-checklist');
-      if(localGuide){
-        const card=$('.post-card').first();
-        card.find('a').attr('href','/articles/local-seo-checklist');
-        card.find('h3').text(localGuide.title);
-        card.find('img').attr({src:`/${localGuide.cardImage}`,alt:'Local SEO planning for a small business'});
-        card.find('.post-card__body > p').text(localGuide.summary);
-      }
-    }
     $('.post-card').each((i,e)=>{
       const href=$(e).attr('href')||$(e).find('a').first().attr('href')||'';
       const item=articles.find(a=>href.includes(`/articles/${a.slug}`));
@@ -91,18 +83,19 @@ export function applySeo(files, articles) {
     });
     const organization = {
       '@type':'Organization','@id':`${siteUrl}/#organization`,name:'Strategic Marketing Advisors, LLC',url:`${siteUrl}/`,
-      description:'Founder-led small business marketing consulting, local SEO, Google Ads and website services based in Cashiers, North Carolina.',
+      description:'Founder-led AI Voice Agent and VedaKosa business system consulting from Cashiers, North Carolina, with AI Visibility support for core clients.',
       logo:absolute('assets/logo.svg'),image:absolute('assets/images/david-mary.png'),telephone:'+1-877-355-8745',email:'hello@strategicmarketingadvisors.com',
       address:{'@type':'PostalAddress',postOfficeBoxNumber:'2534',addressLocality:'Cashiers',addressRegion:'NC',postalCode:'28717',addressCountry:'US'},
       areaServed:{'@type':'Country',name:'United States'},
       founder:[{'@type':'Person',name:'Mary Eule Scarborough',url:absolute('/about/founders')},{'@type':'Person',name:'David A. Scarborough',url:absolute('/about/founders')}]
     };
-    const pageType=relative==='contact.html'?'ContactPage':relative==='about.html'?'AboutPage':'WebPage';
+    const pageType=relative==='contact.html'?'ContactPage':relative==='about.html'?'AboutPage':relative==='about/faq.html'?'FAQPage':'WebPage';
     const graph=[organization,{'@type':'WebSite','@id':`${siteUrl}/#website`,url:`${siteUrl}/`,name:'Strategic Marketing Advisors',publisher:{'@id':organization['@id']},inLanguage:'en-US'},
       {'@type':pageType,'@id':`${url}#webpage`,url,name:title,description,isPartOf:{'@id':`${siteUrl}/#website`},about:{'@id':organization['@id']},inLanguage:'en-US'}];
+    if(relative==='about/faq.html')graph[2].mainEntity=$('.faq-group details').map((i,e)=>({'@type':'Question',name:$(e).find('summary').text(),acceptedAnswer:{'@type':'Answer',text:$(e).find('p').text()}})).get();
     if(relative!=='index.html'&&!utility){
       const crumbs=[{name:'Home',item:`${siteUrl}/`}];
-      if(relative.includes('/')) {const parent=relative.split('/')[0];crumbs.push({name:parent==='services'?'Services':parent==='about'?'About':'Resources',item:absolute(parent==='articles'?'/resources':`/${parent}`)});}
+      if(relative.includes('/')) {const parent=relative.split('/')[0];crumbs.push({name:parent==='services'?'Services':parent==='about'?'About':'Blog',item:absolute(parent==='articles'?'/blog':`/${parent}`)});}
       crumbs.push({name:plain($('h1').first().html()),item:url});
       graph.push({'@type':'BreadcrumbList',itemListElement:crumbs.map((c,i)=>({'@type':'ListItem',position:i+1,...c}))});
     }

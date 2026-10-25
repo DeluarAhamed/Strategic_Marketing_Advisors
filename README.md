@@ -33,6 +33,13 @@ The configured canonical origin is `https://strategic-marketing-advisors.vercel.
 - Sanity retains its existing content schemas. Its source is not automatically fetched into the static build; see `sanity/README.md` before changing that workflow.
 - The historical Decap `/admin/` configuration requires its own backend. It is not the Vercel content-delivery mechanism.
 
-Contact and update-request forms prepare an email in the visitor's email application. Visitors must send that message themselves. There is no server-side form processor or managed newsletter subscription wired to this Vercel site. `form-handoff.js` explains this before and after the handoff; direct phone and email links remain available. The website guide is automated and does not deliver chat messages to the business.
+The contact page embeds the supplied Atlas booking calendar after visitor consent. All call/consultation CTAs link directly to that same calendar. The old email-handoff forms and automated chat are no longer used on current pages. Newsletter subscriptions take place on LocalPromoVault.
+
+`scripts/site-shell.mjs` maintains the shared navigation/footer, booking destination, and retired service routes. The two signature services are AI Voice Agents and VedaKosa; AI Visibility is supporting work for those clients. The old broad service routes redirect through `vercel.json` and are excluded from the sitemap.
+
+`site-ui.js` remembers privacy preferences and only loads the voice widget and inline booking calendar after the relevant opt-in. The voice widget uses the supplied public key; its provider restricts configuration access by origin, so verify it on the production domain. No test should start a real call, grant microphone access or submit a booking without a separate reason to do so.
+
+`site-refresh.css` supplies the bounded shared layouts. Keep `height: auto` / explicit card proportions when intrinsic image dimensions are present: an HTML height attribute plus CSS width alone can stretch the rendered image.
 
 See `docs/SEO-AUDIT.md` for findings, implementation scope and account-level local SEO work that remains.
+See `docs/FOCUSED-OFFER-RELEASE.md` for the revised offer and regression checks.

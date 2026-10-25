@@ -2,25 +2,109 @@
   "siteUrl": "https://strategic-marketing-advisors.vercel.app",
   "modified": "2026-10-25",
   "pages": {
-    "index.html": ["Marketing & Local SEO in Cashiers, NC | SMA", "Get clearer marketing, stronger local visibility and better-qualified inquiries. Founder-led strategy, SEO, Google Ads and web design from Cashiers, NC."],
-    "services.html": ["Small Business Marketing Services | Cashiers, NC | SMA", "Find the right help for slow leads, wasted ad spend or an outdated website. Explore local SEO, Google Ads, consulting and web design with SMA."],
-    "about.html": ["About Our Marketing Consultants | Cashiers, NC | SMA", "Meet Mary and David Scarborough, the founders of Strategic Marketing Advisors. Business experience, practical marketing advice and a Cashiers, NC base."],
-    "contact.html": ["Contact Our Cashiers, NC Marketing Consultants | SMA", "Discuss local visibility, lead quality or marketing costs with Strategic Marketing Advisors. Call 877-355-8745 or request a free 30-minute strategy call."],
-    "resources.html": ["Small Business Marketing Guides & Resources | SMA", "Practical guides to customer retention, positioning and affordable marketing. Get useful next steps from Strategic Marketing Advisors in Cashiers, NC."],
-    "services/seo-local.html": ["Local SEO Services in Cashiers, NC | SMA", "Help nearby customers find and choose your business. Local SEO, Google Business Profile improvements and useful service-page content from Cashiers, NC."],
-    "services/gbp-audit.html": ["Free Google Business Profile Audit | Cashiers, NC | SMA", "Find gaps in your Google Business Profile, business details and review responses. Request a free audit with clear priorities for better local visibility."],
-    "services/google-ads.html": ["Google Ads Management for Small Businesses | SMA", "Spending on clicks without enough qualified leads? Get Google Ads account reviews, targeted campaigns and clear conversion reporting from SMA."],
-    "services/web-design.html": ["Small Business Web Design in Cashiers, NC | SMA", "Turn a confusing or outdated website into a clearer path to an inquiry. Small business web design, mobile-friendly pages and SEO foundations from SMA."],
-    "services/executive-consulting.html": ["Small Business Marketing & Strategy Consulting | SMA", "Choose what to fix first when growth stalls. Founder-led business consulting, positioning and practical marketing priorities for owners and leadership teams."],
-    "services/reputation-management.html": ["Google Review Response & Reputation Management | SMA", "Behind on Google reviews? Explore SMART Reply Plus for AI-assisted response drafts that you review, edit and approve before publication."],
-    "services/ai-automation.html": ["Marketing Automation for Small Businesses | SMA", "Reduce missed follow-ups and repetitive marketing tasks. Get practical CRM, email and AI-assisted workflows with clear human review and ownership."],
-    "services/logo-brand-kit.html": ["Small Business Logo & Brand Kit Design | SMA", "Make your business easier to recognize and trust. Get a coordinated logo, color palette, typography and practical brand guidelines from SMA."],
-    "about/founders.html": ["Mary & David Scarborough | Marketing Consultants | SMA", "Meet the founders of Strategic Marketing Advisors: Mary Eule Scarborough and David A. Scarborough. Explore their marketing, business and teaching experience."],
-    "about/philosophy.html": ["Our Marketing Approach: Clear Plans & Accountability | SMA", "Understand how SMA sets priorities, measures useful results and shares knowledge with your team. Practical marketing advice grounded in business experience."],
-    "about/testimonials.html": ["Book, Course & Client Testimonials | SMA", "Read attributed feedback on Mary and David Scarborough's books, marketing courses and consulting. Learn what each testimonial relates to."],
-    "about/veteran-owned.html": ["Veteran-Owned Marketing Consultancy | Cashiers, NC | SMA", "Learn how David Scarborough's 23 years of Air Force service inform SMA's approach to planning, accountability and small business marketing."],
-    "articles/books.html": ["Marketing Books by Mary & David Scarborough | SMA", "Explore Entrepreneur Press marketing books co-authored by SMA's founders, covering practical marketing, online strategy and finding more customers."],
-    "privacy.html": ["Privacy Policy | Strategic Marketing Advisors", "Read how Strategic Marketing Advisors handles contact inquiries, personal information and privacy requests."],
-    "terms.html": ["Website Terms | Strategic Marketing Advisors", "Read the website terms for Strategic Marketing Advisors, including information about content, service agreements and third-party links."]
+    "index.html": [
+      "AI Voice Agents & VedaKosa Business Systems | SMA",
+      "Answer more opportunities with AI Voice Agents and build your AI business system with VedaKosa. Founder-led consulting from Cashiers, NC, serving clients nationwide."
+    ],
+    "services.html": [
+      "AI Voice Agents & VedaKosa | Consulting & Growth | SMA",
+      "Explore SMA’s two signature services: AI Voice Agents and VedaKosa systems. AI Visibility supports core clients. Book a free strategy call or try the demo."
+    ],
+    "about.html": [
+      "About SMA | AI Voice Agents & VedaKosa Consultants",
+      "Meet the experience behind SMA’s AI Voice Agents and VedaKosa systems: founder-led advice from Mary and David Scarborough in Cashiers, North Carolina."
+    ],
+    "contact.html": [
+      "Book an AI Voice Agent or VedaKosa Consultation | SMA",
+      "Choose a time in SMA’s booking calendar to discuss AI Voice Agents or your VedaKosa business system. Monday–Friday appointments, based in Cashiers, NC."
+    ],
+    "resources.html": [
+      "Free Marketing & AI Resources for Business Owners | SMA",
+      "Explore the SMA blog, LocalPromoVault free marketing resources and The Next Level Skool community. Learn, try it yourself and get help when you need it."
+    ],
+    "services/seo-local.html": [
+      "Local SEO Services in Cashiers, NC | SMA",
+      "Help nearby customers find and choose your business. Local SEO, Google Business Profile improvements and useful service-page content from Cashiers, NC."
+    ],
+    "services/gbp-audit.html": [
+      "Free Google Business Profile Audit | Cashiers, NC | SMA",
+      "Find gaps in your Google Business Profile, business details and review responses. Request a free audit with clear priorities for better local visibility."
+    ],
+    "services/google-ads.html": [
+      "Google Ads Management for Small Businesses | SMA",
+      "Spending on clicks without enough qualified leads? Get Google Ads account reviews, targeted campaigns and clear conversion reporting from SMA."
+    ],
+    "services/web-design.html": [
+      "Small Business Web Design in Cashiers, NC | SMA",
+      "Turn a confusing or outdated website into a clearer path to an inquiry. Small business web design, mobile-friendly pages and SEO foundations from SMA."
+    ],
+    "services/executive-consulting.html": [
+      "Small Business Marketing & Strategy Consulting | SMA",
+      "Choose what to fix first when growth stalls. Founder-led business consulting, positioning and practical marketing priorities for owners and leadership teams."
+    ],
+    "services/reputation-management.html": [
+      "Google Review Response & Reputation Management | SMA",
+      "Behind on Google reviews? Explore SMART Reply Plus for AI-assisted response drafts that you review, edit and approve before publication."
+    ],
+    "services/ai-automation.html": [
+      "Marketing Automation for Small Businesses | SMA",
+      "Reduce missed follow-ups and repetitive marketing tasks. Get practical CRM, email and AI-assisted workflows with clear human review and ownership."
+    ],
+    "services/logo-brand-kit.html": [
+      "Small Business Logo & Brand Kit Design | SMA",
+      "Make your business easier to recognize and trust. Get a coordinated logo, color palette, typography and practical brand guidelines from SMA."
+    ],
+    "about/founders.html": [
+      "Mary & David Scarborough | Marketing Consultants | SMA",
+      "Meet the founders of Strategic Marketing Advisors: Mary Eule Scarborough and David A. Scarborough. Explore their marketing, business and teaching experience."
+    ],
+    "about/philosophy.html": [
+      "Our Marketing Approach: Clear Plans & Accountability | SMA",
+      "Understand how SMA sets priorities, measures useful results and shares knowledge with your team. Practical marketing advice grounded in business experience."
+    ],
+    "about/testimonials.html": [
+      "Book, Course & Client Testimonials | SMA",
+      "Read attributed feedback on Mary and David Scarborough's books, marketing courses and consulting. Learn what each testimonial relates to."
+    ],
+    "about/veteran-owned.html": [
+      "Veteran-Owned Marketing Consultancy | Cashiers, NC | SMA",
+      "Learn how David Scarborough's 23 years of Air Force service inform SMA's approach to planning, accountability and small business marketing."
+    ],
+    "articles/books.html": [
+      "Marketing Books by Mary & David Scarborough | SMA",
+      "Explore Entrepreneur Press marketing books co-authored by SMA's founders, covering practical marketing, online strategy and finding more customers."
+    ],
+    "privacy.html": [
+      "Privacy & Cookie Choices | Strategic Marketing Advisors",
+      "Understand SMA’s necessary preference storage, optional AI voice widget and booking calendar. Read how information is used and manage your choices."
+    ],
+    "terms.html": [
+      "Website Terms | Strategic Marketing Advisors",
+      "Read the website terms for Strategic Marketing Advisors, including information about content, service agreements and third-party links."
+    ],
+    "services/ai-voice-agents.html": [
+      "AI Voice Agents & AI Front Desk for Business | SMA",
+      "Give callers a helpful response 24/7. SMA builds AI Voice Agents for answering, appointment booking and lead follow-up. Hear the demo and discuss your business."
+    ],
+    "services/vedakosa.html": [
+      "VedaKosa AI Business System Implementation | SMA",
+      "Build a practical AI business system with SMA. VedaKosa connects business knowledge, workflows and team adoption through a focused, hands-on engagement."
+    ],
+    "services/ai-visibility.html": [
+      "SEO, AEO & AI Visibility for SMA Clients",
+      "SEO, answer engine optimization and local search support for clients using SMA’s AI Voice Agents or VedaKosa systems. Explore how AI Visibility fits."
+    ],
+    "demo.html": [
+      "Try the AI Voice Agent Demo | AI Front Desk | SMA",
+      "Hear SMA’s live AI Voice Agent demo, then book a tailored walkthrough for your business. Explore answering, appointment booking and lead follow-up."
+    ],
+    "blog.html": [
+      "Business, Marketing & AI Insights | The SMA Blog",
+      "Read practical guides for business owners on marketing, customer relationships and useful systems. Learn with Strategic Marketing Advisors."
+    ],
+    "about/faq.html": [
+      "AI Voice Agents, VedaKosa & SMA | Frequently Asked Questions",
+      "Get clear answers about SMA, AI Voice Agents, VedaKosa, consulting and AI Visibility. Learn how we work, who we help and how to book a free call."
+    ]
   }
 }

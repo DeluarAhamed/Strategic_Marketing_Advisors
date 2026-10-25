@@ -3,6 +3,7 @@ import path from "node:path";
 import * as cheerio from "cheerio";
 import { applySeo, canonicalPath, seo, siteUrl } from "./seo.mjs";
 import { writeText } from "./write-text.mjs";
+import { retired } from "./site-shell.mjs";
 
 const root = process.cwd();
 const contentDir = path.join(root, "content", "articles");
@@ -86,7 +87,7 @@ for (const article of articles) {
   writeText(target, $.html());
 }
 
-const resourcePath = path.join(root, "resources.html");
+const resourcePath = path.join(root, "blog.html");
 const $resources = cheerio.load(fs.readFileSync(resourcePath, "utf8"), { decodeEntities: false });
 const grid = $resources(".tst-grid").first();
 grid.empty();
@@ -103,6 +104,11 @@ articles.forEach((article, index) => {
   </article>`);
 });
 writeText(resourcePath, $resources.html());
+
+const homePath = path.join(root, 'index.html');
+const $home = cheerio.load(fs.readFileSync(homePath, 'utf8'));
+$home('[data-home-blog]').html(articles.slice(0, 3).map(a => `<article class="card post-card"><a href="/articles/${a.slug}" aria-label="${a.title.replaceAll('"','&quot;')}"><img src="/${a.cardImage}" alt="" loading="lazy"></a><div class="post-card__body"><div class="post-card__meta"><span class="badge">${a.category}</span><span class="t-small">${a.readTime}</span></div><a href="/articles/${a.slug}"><h3 class="h5">${a.title}</h3></a><p>${a.summary}</p><a class="text-link" href="/articles/${a.slug}">Read article →</a></div></article>`).join(''));
+writeText(homePath, $home.html());
 
 const htmlFiles = [];
 function walk(dir) {
@@ -139,7 +145,7 @@ for (const file of htmlFiles) {
 applySeo(htmlFiles, articles);
 
 const urls = htmlFiles
-  .filter((file) => !file.endsWith(`${path.sep}404.html`) && !file.endsWith(`${path.sep}success.html`))
+  .filter((file) => !file.endsWith(`${path.sep}404.html`) && !file.endsWith(`${path.sep}success.html`) && !retired[path.relative(root, file).replaceAll(path.sep, '/')])
   .map((file) => {
     const relative = path.relative(root, file).replaceAll(path.sep, "/");
     const location = canonicalPath(relative);
@@ -159,7 +165,7 @@ const rssItems = articles.slice(0, 20).map((article) => `  <item>
 writeText(path.join(root, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
   <title>Strategic Marketing Advisors Insights</title>
-  <link>${siteUrl}/resources</link>
+  <link>${siteUrl}/blog</link>
   <description>Practical marketing strategy, mindset, and tactics.</description>
 ${rssItems}
 </channel></rss>\n`);
