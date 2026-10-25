@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build && npm run check && npm run studio:build",
-  "outputDirectory": ".",
+  "buildCommand": "npm run build && npm run check && npm run check:seo && npm run studio:build && node scripts/package-site.mjs",
+  "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
@@ -12,11 +12,15 @@
   ],
   "headers": [
     {
+      "source": "/(admin|studio|static)(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
       "source": "/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=86400, must-revalidate"
         }
       ]
     },

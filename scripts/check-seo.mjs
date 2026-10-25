@@ -1,0 +1,40 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import * as cheerio from 'cheerio';
+import {canonicalPath, siteUrl} from './seo.mjs';
+const files=[];
+for(const dir of ['.','about','services','articles'])for(const name of fs.readdirSync(dir))if(name.endsWith('.html'))files.push(path.join(dir,name).replaceAll('\\','/'));
+const sitemap=fs.readFileSync('sitemap.xml','utf8');
+const titles=new Set();
+const descriptions=new Set();
+for(const file of files){
+  const $=cheerio.load(fs.readFileSync(file,'utf8'));
+  const utility=['404.html','success.html'].includes(file);
+  assert.equal($('h1').length,1,`${file}: exactly one H1`);
+  assert.equal($('main').length,1,`${file}: main landmark`);
+  assert.ok($('title').text().trim(),`${file}: title`);
+  assert.equal($('meta[name="description"]').length,1,`${file}: one description`);
+  assert.equal($('meta[property="og:title"]').attr('content'),$('title').text(),`${file}: social title matches`);
+  if(utility){assert.match($('meta[name="robots"]').attr('content'),/noindex/);continue;}
+  const url=siteUrl+canonicalPath(file);
+  assert.equal($('link[rel="canonical"]').length,1,`${file}: one canonical`);
+  assert.equal($('link[rel="canonical"]').attr('href'),url,`${file}: canonical`);
+  assert.ok(sitemap.includes(`<loc>${url}</loc>`),`${file}: sitemap`);
+  assert.ok(!titles.has($('title').text()),`${file}: duplicate title`);titles.add($('title').text());
+  const description=$('meta[name="description"]').attr('content');
+  assert.ok(!descriptions.has(description),`${file}: duplicate description`);descriptions.add(description);
+  assert.ok(description.length>=40,`${file}: meaningful description`);
+  $('a[href]').each((i,e)=>{const href=$(e).attr('href');if(!/^(https?:|mailto:|tel:)/.test(href))assert.ok(!/\.html(?:[?#]|$)/.test(href),`${file}: clean internal URL ${href}`);});
+  const graph=JSON.parse($('script[type="application/ld+json"]').html())['@graph'];
+  assert.ok(graph.some(e=>e['@type']==='Organization'),`${file}: organization`);
+  assert.ok(!graph.some(e=>['LocalBusiness','ProfessionalService','AggregateRating'].includes(e['@type'])),`${file}: no unsupported physical-location/rating schema`);
+  if(file.startsWith('services/'))assert.ok(graph.some(e=>e['@type']==='Service'),`${file}: service schema`);
+  if(file.startsWith('articles/')&&file!=='articles/books.html')assert.ok(graph.some(e=>e['@type']==='BlogPosting'),`${file}: article schema`);
+  assert.ok(!$('form[data-netlify]').length,`${file}: unsupported form processing`);
+  if($('form[data-email-handoff]').length)assert.ok($('script[src$="form-handoff.js"]').length,`${file}: email handoff script`);
+}
+assert.ok(!sitemap.includes('.html'), 'Sitemap uses clean URLs');
+assert.ok(!sitemap.includes('/404')&&!sitemap.includes('/success'),'Utility pages excluded');
+assert.ok(fs.readFileSync('robots.txt','utf8').includes(`${siteUrl}/sitemap.xml`),'Robots sitemap origin');
+console.log(`SEO checks passed for ${files.length} public HTML pages: headings, metadata, canonicals, sitemap, structured data, internal URLs and form handoffs.`);

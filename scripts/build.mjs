@@ -1,11 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as cheerio from "cheerio";
+import { applySeo, canonicalPath, seo, siteUrl } from "./seo.mjs";
+import { writeText } from "./write-text.mjs";
 
 const root = process.cwd();
 const contentDir = path.join(root, "content", "articles");
 const articleDir = path.join(root, "articles");
-const siteUrl = "https://strategicmarketingadvisors.com";
 
 const articles = fs.readdirSync(contentDir)
   .filter((name) => name.endsWith(".json"))
@@ -82,7 +83,7 @@ for (const article of articles) {
     })}</script>`);
   }
 
-  fs.writeFileSync(target, $.html());
+  writeText(target, $.html());
 }
 
 const resourcePath = path.join(root, "resources.html");
@@ -92,7 +93,7 @@ grid.empty();
 articles.forEach((article, index) => {
   const label = article.category[0].toUpperCase() + article.category.slice(1);
   grid.append(`<article class="card post-card reveal" data-d="${(index % 3) + 1}" data-category="${article.category}">
-    <a href="articles/${article.slug}.html"><img src="${article.cardImage}" alt="" loading="lazy" /></a>
+    <a href="articles/${article.slug}.html" aria-label="${article.title.replaceAll('"', '&quot;')}"><img src="${article.cardImage}" alt="" loading="lazy" /></a>
     <div class="post-card__body">
       <div class="post-card__meta"><span class="badge">${label}</span><span class="t-small semibold">${article.readTime}</span></div>
       <a href="articles/${article.slug}.html"><h3 class="h5">${article.title}</h3></a>
@@ -101,12 +102,12 @@ articles.forEach((article, index) => {
     </div>
   </article>`);
 });
-fs.writeFileSync(resourcePath, $resources.html());
+writeText(resourcePath, $resources.html());
 
 const htmlFiles = [];
 function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if ([".git", ".sanity", "dist", "sanity-dist", "sanity-hosted-build", "studio", "static", "node_modules", "uploads", "admin", "partials"].includes(entry.name)) continue;
+    if ([".git", ".sanity", "dist", "sanity-dist", "sanity-hosted-build", "studio", "static", "node_modules", "uploads", "admin", "partials", "work", "docs"].includes(entry.name)) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(full);
     else if (entry.name.endsWith(".html")) htmlFiles.push(full);
@@ -132,31 +133,33 @@ for (const file of htmlFiles) {
   if (footer.length && !footer.find(".footer__legal").length) {
     footer.find("p").first().after(`<div class="footer__legal"><a href="${prefix}privacy.html">Privacy</a><a href="${prefix}terms.html">Terms</a></div>`);
   }
-  fs.writeFileSync(file, $.html());
+  writeText(file, $.html());
 }
+
+applySeo(htmlFiles, articles);
 
 const urls = htmlFiles
   .filter((file) => !file.endsWith(`${path.sep}404.html`) && !file.endsWith(`${path.sep}success.html`))
   .map((file) => {
     const relative = path.relative(root, file).replaceAll(path.sep, "/");
-    const location = relative === "index.html" ? "/" : `/${relative}`;
-    const article = articles.find((item) => location === `/articles/${item.slug}.html`);
-    return `  <url><loc>${siteUrl}${location}</loc><lastmod>${article?.date || "2026-06-11"}</lastmod></url>`;
+    const location = canonicalPath(relative);
+    const article = articles.find((item) => relative === `articles/${item.slug}.html`);
+    return `  <url><loc>${siteUrl}${location}</loc><lastmod>${article?.modified || article?.date || seo.modified}</lastmod></url>`;
   });
-fs.writeFileSync(path.join(root, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`);
+writeText(path.join(root, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`);
 
 const escapeXml = (value) => value.replace(/[<>&'\"]/g, (char) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", "\"": "&quot;" }[char]));
 const rssItems = articles.slice(0, 20).map((article) => `  <item>
     <title>${escapeXml(article.title)}</title>
-    <link>${siteUrl}/articles/${article.slug}.html</link>
-    <guid>${siteUrl}/articles/${article.slug}.html</guid>
+    <link>${siteUrl}/articles/${article.slug}</link>
+    <guid>${siteUrl}/articles/${article.slug}</guid>
     <pubDate>${new Date(`${article.date}T12:00:00Z`).toUTCString()}</pubDate>
     <description>${escapeXml(article.summary)}</description>
   </item>`).join("\n");
-fs.writeFileSync(path.join(root, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>
+writeText(path.join(root, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
   <title>Strategic Marketing Advisors Insights</title>
-  <link>${siteUrl}/resources.html</link>
+  <link>${siteUrl}/resources</link>
   <description>Practical marketing strategy, mindset, and tactics.</description>
 ${rssItems}
 </channel></rss>\n`);

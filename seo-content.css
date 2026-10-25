@@ -1,0 +1,16 @@
+/* Buyer guidance uses the existing site's type and color tokens. */
+.seo-section .section-head { max-width: 58rem; margin-bottom: 2rem; }
+.seo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+.seo-card { border: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 18%, transparent); border-radius: 1rem; padding: 1.75rem; }
+.seo-card h3 { margin-bottom: 1rem; }
+.seo-card p, .seo-followup, .seo-faq p { line-height: 1.7; }
+.seo-followup { max-width: 64rem; margin-top: 2rem; }
+.seo-section a, .form__note a { text-decoration: underline; text-underline-offset: .18em; }
+.seo-faq { max-width: 64rem; margin-top: 2rem; }
+.seo-faq details { border-bottom: 1px solid currentColor; padding: 1.25rem 0; }
+.seo-faq summary { cursor: pointer; font-weight: 600; font-size: 1.125rem; }
+.seo-faq details p { margin-top: 1rem; }
+.skip-link { position: fixed; top: .5rem; left: .5rem; z-index: 10000; padding: .75rem 1.25rem; background: #fff; color: #111; transform: translateY(-200%); }
+.skip-link:focus { transform: translateY(0); }
+.form-handoff { margin-top: 1rem; }
+@media (max-width: 800px) { .seo-grid { grid-template-columns: 1fr; } .seo-card { padding: 1.5rem; } }

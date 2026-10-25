@@ -1,0 +1,294 @@
+{
+  "assets/images/david-cutout.png": [
+    750,
+    750
+  ],
+  "assets/images/david-mary.png": [
+    603,
+    571
+  ],
+  "assets/images/david.jpg": [
+    750,
+    750
+  ],
+  "assets/images/home-about-section.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-blog-list-section-0.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-blog-list-section-1.jpg": [
+    1628,
+    966
+  ],
+  "assets/images/home-blog-list-section-2.jpg": [
+    1535,
+    1024
+  ],
+  "assets/images/home-contact-section.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-0.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-1.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-2.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-3.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-4.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-5.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-6.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-7.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-8.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-features-list-section-9.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-hero-header-section.jpg": [
+    4000,
+    1500
+  ],
+  "assets/images/home-services-section.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-stats-section.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-team-section-0.jpg": [
+    1600,
+    1600
+  ],
+  "assets/images/home-team-section-1.jpg": [
+    1600,
+    1600
+  ],
+  "assets/images/home-team-section-2.jpg": [
+    1600,
+    1600
+  ],
+  "assets/images/home-testimonial-section-0.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-testimonial-section-1.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/home-testimonial-section-2.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/mary-eule-scarborough-2026.png": [
+    761,
+    750
+  ],
+  "assets/images/mary-eule-scarborough-2026.webp": [
+    761,
+    750
+  ],
+  "assets/images/mary.jpg": [
+    750,
+    750
+  ],
+  "assets/images/mary.png": [
+    761,
+    750
+  ],
+  "assets/images/articles/best-mascots.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/articles/business-character.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/articles/checking-givens.jpg": [
+    1619,
+    972
+  ],
+  "assets/images/articles/direct-mail.jpg": [
+    1628,
+    966
+  ],
+  "assets/images/articles/finding-balance.jpg": [
+    1535,
+    1024
+  ],
+  "assets/images/articles/perception.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/articles/phone-etiquette.jpg": [
+    1672,
+    941
+  ],
+  "assets/images/articles/repeat-business.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/articles/shoestring-budget.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/about-workshop.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/ai-automation.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/brand-design.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/coaching.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/executive-consulting.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/google-ads.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/reputation.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/results.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/seo-local.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/services-overview.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/strategy-planning.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/veteran-leadership.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/web-design.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/generated/hero-brand.jpg": [
+    1672,
+    941
+  ],
+  "assets/images/generated/hero-digital.jpg": [
+    1717,
+    916
+  ],
+  "assets/images/generated/hero-leadership.jpg": [
+    1748,
+    899
+  ],
+  "assets/images/generated/hero-strategy.jpg": [
+    1536,
+    1024
+  ],
+  "assets/images/custom/editorial/about-workshop.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/ai-automation.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/brand-design.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/coaching.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/executive-consulting.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/google-ads.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/home-business-hero.png": [
+    1672,
+    941
+  ],
+  "assets/images/custom/editorial/home-veteran-strategy-hero.png": [
+    1726,
+    911
+  ],
+  "assets/images/custom/editorial/home-veteran-strategy-hero.webp": [
+    1726,
+    911
+  ],
+  "assets/images/custom/editorial/reputation.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/results.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/seo-local.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/services-overview.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/strategy-planning.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/veteran-leadership.jpg": [
+    1440,
+    960
+  ],
+  "assets/images/custom/editorial/web-design.jpg": [
+    1440,
+    960
+  ]
+}

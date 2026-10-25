@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /admin/
+Disallow: /admin
+Disallow: /studio
+Disallow: /static/
 
-Sitemap: https://strategicmarketingadvisors.com/sitemap.xml
+Sitemap: https://strategic-marketing-advisors.vercel.app/sitemap.xml

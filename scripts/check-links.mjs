@@ -8,7 +8,7 @@ const files = [];
 
 function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if ([".git", ".sanity", "dist", "sanity-dist", "sanity-hosted-build", "studio", "static", "node_modules", "uploads", "partials"].includes(entry.name)) continue;
+    if ([".git", ".sanity", "dist", "sanity-dist", "sanity-hosted-build", "studio", "static", "node_modules", "uploads", "partials", "work", "docs"].includes(entry.name)) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(full);
     else if (entry.name.endsWith(".html")) files.push(full);
@@ -26,7 +26,7 @@ for (const file of files) {
     const target = clean.startsWith("/")
       ? path.join(root, clean.replace(/^\/+/, ""))
       : path.resolve(path.dirname(file), clean);
-    if (!fs.existsSync(target)) failures.push(`${path.relative(root, file)} -> ${raw}`);
+    if (!fs.existsSync(target) && !fs.existsSync(`${target}.html`)) failures.push(`${path.relative(root, file)} -> ${raw}`);
   });
 }
 
