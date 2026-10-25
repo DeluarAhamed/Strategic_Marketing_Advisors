@@ -1,3 +1,4 @@
+import {providerState,syncGoogle,syncSemrush,auditSite} from './reporting.ts';
 // No credentials are bundled into the website. Supabase injects server keys here.
 const base=Deno.env.get('SUPABASE_URL')!;
 const service=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -10,7 +11,7 @@ const stages=['new','contacted','qualified','booked','won','closed'];
 class RequestError extends Error { status:number; constructor(message:string,status=400){super(message);this.status=status;} }
 function text(value:unknown,max:number,required=false){if(typeof value!=='string'||value.length>max||(required&&!value.trim()))throw new RequestError('Please check the supplied fields.');return value.trim();}
 function path(value:unknown){const p=text(value,200,true);if(!/^\/[a-z0-9/-]*$/.test(p)||p.includes('//')||p.startsWith('/dashboard')||p.startsWith('/api'))throw new RequestError('Invalid page path.');return p;}
-async function db(route:string,method='GET',body?:unknown){const r=await fetch(base+'/rest/v1/'+route,{method,headers:{apikey:service,Authorization:'Bearer '+service,'Content-Type':'application/json',Prefer:'return=representation'},body:body===undefined?undefined:JSON.stringify(body)});if(!r.ok)throw new RequestError('The database operation could not complete. Please reload and try again.',503);return r.status===204?null:await r.json();}
+async function db(route:string,method='GET',body?:unknown){const r=await fetch(base+'/rest/v1/'+route,{method,headers:{apikey:service,Authorization:'Bearer '+service,'Content-Type':'application/json',Prefer:'return=representation'+(route.startsWith('sma_report_snapshots?on_conflict=')?',resolution=merge-duplicates':'')},body:body===undefined?undefined:JSON.stringify(body)});if(!r.ok)throw new RequestError('The database operation could not complete. Please reload and try again.',503);return r.status===204?null:await r.json();}
 async function rate(bucket:string,key:string,limit:number,seconds:number){const ok=await db('rpc/sma_rate_allowed','POST',{p_bucket:bucket,p_key:key,p_limit:limit,p_seconds:seconds});if(!ok)throw new RequestError('Please wait a moment before trying again.',429);}
 async function digest(value:string){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return [...new Uint8Array(bytes)].map(n=>n.toString(16).padStart(2,'0')).join('');}
 function validateContent(value:any,kind:string){
@@ -22,6 +23,13 @@ function validateContent(value:any,kind:string){
  if(result.heroImage&&!result.heroAlt)throw new RequestError('Add alt text for the main image.');
  if(kind==='article'){result.body=text(value.body||'',50000,true);result.author=text(value.author||'Strategic Marketing Advisors',100);result.category=['mindset','strategies','tactics'].includes(value.category)?value.category:'strategies';result.date=/^\d{4}-\d{2}-\d{2}$/.test(value.date||'')?value.date:new Date().toISOString().slice(0,10);result.readTime=text(value.readTime||'5 min read',30);}
  return result;
+}
+function validateDeal(body:any){
+ const value=body.deal_value,probability=body.win_probability;
+ if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)||value<0||value>999999999999.99)||!Number.isInteger(probability)||probability<0||probability>100)throw new RequestError('Enter a valid USD amount and likelihood between 0 and 100.');
+ const close=body.expected_close||null;
+ if(close){const parsed=new Date(close);if(typeof close!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(close)||!Number.isFinite(parsed.getTime())||parsed.toISOString().slice(0,10)!==close)throw new RequestError('Choose a valid expected close date.');}
+ return {deal_value:value===null?null:Math.round(value*100)/100,win_probability:probability,expected_close:close};
 }
 function imageUrl(value:unknown){const s=text(value,1200);if(!s)return '';if(/^\/assets\/[a-zA-Z0-9/_.,-]+\.(webp|png|jpe?g)$/.test(s))return s;try{const u=new URL(s);if(u.origin===base&&u.pathname.startsWith('/storage/v1/object/public/sma-media/')&&!u.search&&!u.hash)return u.href;}catch{}throw new RequestError('Choose an image from the SMA media library.');}
 async function actor(req:Request){
@@ -57,10 +65,39 @@ async function publicAction(action:string,req:Request,body:any,ipKey:string){
  throw new RequestError('Not found.',404);
 }
 async function adminAction(action:string,req:Request,body:any,who:any){
- if(who.role==='viewer'&&!['profile','overview','insights'].includes(action))throw new RequestError('This account can view reports only.',403);
+ if(who.role==='viewer'&&!['profile','overview','insights','revenue','reports'].includes(action))throw new RequestError('This account can view reports only.',403);
  const writable=['owner','editor'].includes(who.role);
  if(req.method==='POST'&&!writable)throw new RequestError('This account has read-only access.',403);
  const url=new URL(req.url);
+ if(action==='create-lead'&&req.method==='POST'){
+  const email=text(body.email||'',254).toLowerCase(),phone=text(body.phone||'',40);if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!email&&phone.replace(/\D/g,'').length<7||!interests.includes(body.interest)||!['phone','referral','event','other'].includes(body.source)||body.consent!==true)throw new RequestError('Check the email, service, source and contact permission.');
+  const rows=await db('sma_leads','POST',{name:text(body.name,120,true),email,business:text(body.business||'',180),phone:text(body.phone||'',40),interest:body.interest,source:body.source,message:text(body.message||'',4000)});await audit(who.email,'create_lead',rows[0].id);return {id:rows[0].id};
+ }
+ if(action==='revenue'&&req.method==='GET')return await db('rpc/sma_revenue','POST',{p_days:[7,30,90].includes(Number(url.searchParams.get('days')))?Number(url.searchParams.get('days')):30});
+ if(action==='reports'&&req.method==='GET'){
+  const [reports,configs]=await Promise.all([db('sma_report_snapshots?select=source,period_days,data,synced_at&order=synced_at.desc'),db('sma_reporting_config?id=eq.true')]);const c=configs[0]||{};
+  return reports.filter((r:any)=>r.source==='site-audit'||r.source==='ga4'&&c.ga4_property&&r.data.property===c.ga4_property||r.source==='search-console'&&c.search_property&&r.data.property===c.search_property||r.source==='semrush'&&c.semrush_domain&&r.data.domain===c.semrush_domain);
+ }
+ if(['reporting-status','save-reporting-config','sync-report'].includes(action)){
+  if(who.role!=='owner')throw new RequestError('Only an owner can configure or sync reporting providers.',403);
+  const config=(await db('sma_reporting_config?id=eq.true'))[0]||{};
+  if(action==='reporting-status'&&req.method==='GET')return providerState(config,n=>Deno.env.get(n));
+  if(action==='save-reporting-config'&&req.method==='POST'){
+   const ga4=text(body.ga4_property||'',30),search=text(body.search_property||'',300),domain=text(body.semrush_domain||'',200).toLowerCase();
+   if(ga4&&!/^\d+$/.test(ga4)||search&&!/^(sc-domain:[a-z0-9.-]+|https:\/\/[a-z0-9.-]+\/)$/.test(search)||domain&&!/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/.test(domain))throw new RequestError('Check your numeric GA4 ID, Search Console property and domain.');
+   await db('sma_reporting_config?id=eq.true','PATCH',{ga4_property:ga4,search_property:search,semrush_domain:domain,updated_at:new Date().toISOString()});
+   await audit(who.email,'reporting_config','SMA reporting');return {ok:true};
+  }
+  if(action==='sync-report'&&req.method==='POST'){
+   const source=body.source,days=[7,30,90].includes(body.days)?body.days:30;
+   if(!['ga4','search-console','semrush','site-audit'].includes(source))throw new RequestError('Choose a supported report.');
+   if(source==='semrush'&&body.approve_units!==true)throw new RequestError('Approve the stated Semrush API-unit usage before syncing.');
+   await rate('report-sync-'+source,who.email,1,source==='site-audit'?300:60);
+   let data;try{data=source==='site-audit'?await auditSite():source==='semrush'?await syncSemrush(config,n=>Deno.env.get(n)):await syncGoogle(source,days,config,n=>Deno.env.get(n));}catch(e){throw new RequestError(e instanceof Error?e.message:'Report sync failed.',503);}
+   await db('sma_report_snapshots?on_conflict=source,period_days','POST',{source,period_days:['semrush','site-audit'].includes(source)?0:days,data,synced_at:new Date().toISOString()});
+   await audit(who.email,'sync_report',source);return {ok:true};
+  }
+ }
  if(action==='insights'&&req.method==='GET'){
   const days=[7,30,90].includes(Number(url.searchParams.get('days')))?Number(url.searchParams.get('days')):30;
   const device=url.searchParams.get('device')||'';if(!['','mobile','tablet','desktop'].includes(device))throw new RequestError('Invalid device filter.');
@@ -81,7 +118,7 @@ async function adminAction(action:string,req:Request,body:any,who:any){
  if(['add-task','complete-task','add-activity','lead-update'].includes(action)&&req.method==='POST'){
   const id=text(body.id,36,true);if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))throw new RequestError('Invalid identifier.');
   const data:any={id};
-  if(action==='lead-update'){if(!stages.includes(body.stage)||!['normal','high'].includes(body.priority||'normal'))throw new RequestError('Invalid lead update.');Object.assign(data,{stage:body.stage,notes:text(body.notes||'',8000),priority:body.priority||'normal'});}
+  if(action==='lead-update'){if(!stages.includes(body.stage)||!['normal','high'].includes(body.priority||'normal'))throw new RequestError('Invalid lead update.');Object.assign(data,{stage:body.stage,notes:text(body.notes||'',8000),priority:body.priority||'normal'});if(Object.hasOwn(body,'deal_value'))Object.assign(data,validateDeal(body));}
   if(action==='add-task'){
    const due=Date.parse(body.due_at);if(!Number.isFinite(due)||due<Date.now()-366*86400000||due>Date.now()+5*366*86400000)throw new RequestError('Choose a valid follow-up date within five years.');
    Object.assign(data,{title:text(body.title,180,true),due_at:new Date(due).toISOString()});

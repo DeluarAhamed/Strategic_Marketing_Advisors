@@ -1,3 +1,4 @@
+import {createBusiness} from '/dashboard/business.js';
 import {createWorkflows} from '/dashboard/workflows.js';
 import {recoveryFromHash} from '/dashboard/auth-flow.js';
 const recoverySession=recoveryFromHash(location.hash);
@@ -5,11 +6,11 @@ const recoveryError=new URLSearchParams(location.hash.replace(/^#/,'' )).has('er
 if(location.hash)history.replaceState(null,'',location.pathname+location.search);
 const config=await fetch('/backend-config.json').then(r=>{if(!r.ok)throw new Error('Configuration unavailable');return r.json();});
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let session=null,profile=null,activeTab='overview',drafts=[],published=[],media=[],leads=[],leadOffset=0,currentDraft=null,currentLead=null;
+let session=null,profile=null,activeTab='overview',drafts=[],published=[],media=[],leads=[],leadOffset=0,currentDraft=null,currentLead=null,viewGeneration=0;
 const adminEntry=/^\/admin(?:\/|$)/.test(location.pathname);
 try{session=JSON.parse(sessionStorage.getItem('sma-dashboard-session')||'null');}catch{}
 if(recoverySession){session=recoverySession;sessionStorage.setItem('sma-dashboard-session',JSON.stringify(session));}
-const names={overview:'Overview',leads:'Leads',followups:'Follow-ups',content:'Content',media:'Media library',kate:'Kate & integrations',settings:'Team & activity'};
+const names={overview:'Overview',analytics:'Analytics',seo:'SEO & search',pipeline:'Pipeline & value',connections:'Reporting connections',leads:'Leads',followups:'Follow-ups',content:'Content',media:'Media library',kate:'Kate & integrations',settings:'Team & activity'};
 if(adminEntry){
  document.body.classList.add('admin-entry');
  const modal=document.createElement('dialog');modal.className='auth-modal';modal.id='auth-modal';modal.setAttribute('aria-labelledby','auth-title');
@@ -18,7 +19,7 @@ if(adminEntry){
  const open=document.createElement('button');open.type='button';open.className='admin-open-login';open.textContent='Sign in to your workspace';open.onclick=()=>{modal.showModal();card.querySelector('input[name="email"]').focus();};$('.login-story').append(open);
  modal.showModal();card.querySelector('input[name="email"]').focus();
 }
-function status(message='',error=false){$('#app-status').textContent=message;$('#app-status').classList.toggle('error',error);}
+function status(message='',error=false){if(message==='Workspace view changed.')return;$('#app-status').textContent=message;$('#app-status').classList.toggle('error',error);}
 function remember(data){session=data;sessionStorage.setItem('sma-dashboard-session',JSON.stringify(data));}
 async function auth(route,body,options={}){const headers={apikey:config.publishableKey,'Content-Type':'application/json'};if(options.authenticated)headers.Authorization='Bearer '+await token();const r=await fetch(config.url+'/auth/v1/'+route,{method:options.method||'POST',headers,body:body===undefined?undefined:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw new Error(data.msg||data.error_description||data.message||'Sign-in failed. Please try again.');return data;}
 async function token(){
@@ -27,11 +28,12 @@ async function token(){
  return session.access_token;
 }
 async function api(action,body,params=''){
+ const generation=viewGeneration;
  const r=await fetch(config.url+'/functions/v1/sma-api?action='+action+params,{method:body===undefined?'GET':'POST',headers:{apikey:config.publishableKey,Authorization:'Bearer '+await token(),'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
- const data=await r.json();if(!r.ok){if(r.status===401)showLogin();throw new Error(data.error||'The request could not complete.');}return data;
+ const data=await r.json();if(generation!==viewGeneration)throw new Error('Workspace view changed.');if(!r.ok){if(r.status===401)showLogin();throw new Error(data.error||'The request could not complete.');}return data;
 }
 function showLogin(){session=null;profile=null;sessionStorage.removeItem('sma-dashboard-session');if(!adminEntry){location.replace('/admin');return;}$('#dashboard').hidden=true;$('#login').hidden=false;const modal=$('#auth-modal');if(modal&&!modal.open)modal.showModal();}
-async function start(){profile=await api('profile');if(adminEntry){location.replace('/dashboard');return;}$('#login').hidden=true;$('#dashboard').hidden=false;$('#account-email').textContent=profile.email;$('#account-role').textContent=profile.role;document.querySelectorAll('[data-tab]').forEach(button=>{button.hidden=profile.role==='viewer'&&button.dataset.tab!=='overview';});await navigate('overview');}
+async function start(){profile=await api('profile');if(adminEntry){location.replace('/dashboard');return;}$('#login').hidden=true;$('#dashboard').hidden=false;$('#account-email').textContent=profile.email;$('#account-role').textContent=profile.role;document.querySelectorAll('[data-tab]').forEach(button=>{button.hidden=profile.role==='viewer'&&!['overview','analytics','seo'].includes(button.dataset.tab)||button.dataset.tab==='connections'&&profile.role!=='owner';});await navigate(new URLSearchParams(location.search).get('view')||'overview');}
 let authMode=new URLSearchParams(location.search).get('mode')||'signin';
 if(!['signin','create','recover','reset'].includes(authMode))authMode='signin';
 if(recoverySession)authMode='reset';
@@ -82,10 +84,11 @@ const empty=(message='Nothing to show yet.')=>`<p class="empty">${esc(message)}<
 function table(headers,rows){return `<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(cell=>`<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
 function panel(title,body,description=''){return `<section class="panel"><div class="panel-head"><div><h2>${esc(title)}</h2>${description?`<p>${esc(description)}</p>`:''}</div></div>${body}</section>`;}
 const date=s=>s?new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(new Date(s)):'—';
-const {overview,leadList,openLead,followups}=createWorkflows({api,$,esc,panel,table,empty,date,status,role:()=>profile?.role});
-setInterval(()=>{if(profile&&!document.hidden&&!document.querySelector('dialog[open]')&&['overview','followups'].includes(activeTab)){(activeTab==='overview'?overview():followups()).catch(e=>status(e.message,true));}},60000);
+const {leadList,openLead,followups}=createWorkflows({api,$,esc,panel,table,empty,date,status,role:()=>profile?.role});
+const business=createBusiness({api,$,esc,panel,table,empty,date,status,role:()=>profile?.role,navigate,leadList,openLead});
+setInterval(()=>{if(profile&&!document.hidden&&!document.querySelector('dialog[open]')&&['overview','analytics','followups'].includes(activeTab)){(activeTab==='overview'?business.home():activeTab==='analytics'?business.analytics():followups()).catch(e=>status(e.message,true));}},60000);
 $('#lead-dialog').addEventListener('close',()=>{if(profile)navigate(activeTab);});
-async function navigate(tab){activeTab=tab;status('');$('#view-title').textContent=names[tab];document.querySelectorAll('[data-tab]').forEach(b=>{if(b.dataset.tab===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});$('#view').innerHTML=empty('Loading…');try{if(tab==='overview')await overview(30);if(tab==='leads'){leadOffset=0;await leadList();}if(tab==='followups')await followups();if(tab==='content')await contentList();if(tab==='media')await mediaList();if(tab==='kate')integrations();if(tab==='settings')await settings();}catch(e){$('#view').innerHTML=empty('This view could not load. Please try again.');status(e.message,true);}}
+async function navigate(tab){if(!Object.hasOwn(names,tab)||profile.role==='viewer'&&!['overview','analytics','seo'].includes(tab)||tab==='connections'&&profile.role!=='owner')tab='overview';history.replaceState(null,'','/dashboard'+(tab==='overview'?'':'?view='+tab));const generation=++viewGeneration;activeTab=tab;status('');$('#view-title').textContent=names[tab];document.querySelectorAll('[data-tab]').forEach(b=>{if(b.dataset.tab===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});$('#view').innerHTML=empty('Loading…');try{if(tab==='overview')await business.home();if(tab==='analytics')await business.analytics();if(tab==='seo')await business.seo();if(tab==='pipeline')await business.pipeline();if(tab==='connections')await business.connections();if(tab==='leads'){leadOffset=0;await leadList(true,false,'');}if(tab==='followups')await followups();if(tab==='content')await contentList();if(tab==='media')await mediaList();if(tab==='kate')integrations();if(tab==='settings')await settings();$('#view-title').tabIndex=-1;$('#view-title').focus({preventScroll:true});window.scrollTo(0,0);}catch(e){if(generation!==viewGeneration)return;$('#view').innerHTML=empty('This view could not load. Please try again.');status(e.message,true);}}
 async function contentList(){
  [drafts,published]=await Promise.all([api('content'),api('published')]);
  $('#view').innerHTML=`<div class="toolbar"><p class="muted">Edit page messaging, publish articles and add useful content sections.</p><button id="new-article" class="primary" ${profile.role==='viewer'?'disabled':''}>New blog article</button></div>${panel('Website content',table(['Content','Type','Draft','Live',''],drafts.map((d,i)=>{const live=published.find(p=>p.path===d.path);return [`<strong>${esc(d.content.title)}</strong><span class="content-path">${esc(d.path)}</span>`,esc(d.kind),`v${d.revision}<span class="content-path">${esc(date(d.updated_at))}</span>`,live?`v${live.revision}<span class="content-path">${esc(date(live.published_at))}</span>`:'Original website version',`<button data-edit="${i}">${profile.role==='viewer'?'View':'Edit'}</button>`];})), 'Saving a draft does not change the live website. Only owners can publish.')}<div class="callout">The approved page layouts stay in place. Use plain text and structured sections to keep mobile layouts and SEO consistent. This dashboard is the publishing source for connected edits; legacy Sanity changes are not automatically imported.</div>`;
