@@ -6,7 +6,7 @@ const anon=Deno.env.get('SUPABASE_ANON_KEY')!;
 const origins=new Set(['https://strategic-marketing-advisors.vercel.app','http://localhost:3000','http://localhost:3100']);
 const jsonHeaders={'Content-Type':'application/json','Cache-Control':'no-store'};
 const events=new Set(['page_view','booking_opened','voice_panel_opened','resource_clicked','phone_clicked','lead_submitted']);
-const interests=['AI Voice Agents','VedaKosa','Existing client support','Not sure yet'];
+const interests=['AI Voice Agents','VedaKosa','AI Visibility','Existing client support','Not sure yet'];
 const stages=['new','contacted','qualified','booked','won','closed'];
 class RequestError extends Error { status:number; constructor(message:string,status=400){super(message);this.status=status;} }
 function text(value:unknown,max:number,required=false){if(typeof value!=='string'||value.length>max||(required&&!value.trim()))throw new RequestError('Please check the supplied fields.');return value.trim();}

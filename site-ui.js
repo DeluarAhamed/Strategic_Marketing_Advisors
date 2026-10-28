@@ -42,7 +42,7 @@
     if (document.querySelector('.voice-dock')) return;
     var dock = document.createElement('details');
     dock.className = 'voice-dock';
-    dock.innerHTML = '<summary aria-label="Talk to Kate, AI assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-5-2-2 2a13 13 0 0 1-7-7l2-2-2-5Z"/></svg><span class="voice-launch-label">Questions? Talk to Kate</span></summary><div class="voice-panel"><div class="voice-panel__head"><div><strong>Meet your AI front desk</strong><small>Kate · SMA AI assistant</small></div><button type="button" class="voice-panel__close" aria-label="Close Kate panel">×</button></div><div class="voice-panel__profile"><img class="kate-avatar" src="/assets/images/kate-ai-avatar.webp" alt="AI-generated portrait representing Kate" width="112" height="112"><span class="ai-label">AI assistant</span><h2>Hi, I’m Kate.</h2><p>Ask about AI Voice Agents, VedaKosa or your next step with David.</p></div><button type="button" class="voice-panel__enable" data-enable-voice>Enable voice demo</button><p class="voice-panel__privacy">Enabling voice loads our third-party voice service. <a href="/privacy">Privacy details</a>. Your microphone starts only when you choose.</p><div id="sma-voice-widget"></div><p class="voice-panel__status" role="status" data-voice-status>Enable the demo, then use the microphone control to speak.</p><button type="button" class="voice-dock__book">Book a call with David</button></div>';
+    dock.innerHTML = '<summary aria-label="Talk to Kate, AI assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-5-2-2 2a13 13 0 0 1-7-7l2-2-2-5Z"/></svg><span class="voice-launch-label">Questions? Talk to Kate</span></summary><div class="voice-panel"><div class="voice-panel__head"><div><strong>Meet your AI front desk</strong><small>Kate · SMA AI assistant</small></div><button type="button" class="voice-panel__close" aria-label="Close Kate panel">×</button></div><div class="voice-panel__profile"><img class="kate-avatar" src="/assets/images/kate-ai-avatar.webp" alt="AI-generated portrait representing Kate" width="112" height="112"><span class="ai-label">AI assistant</span><h2>Hi, I’m Kate.</h2><p>Ask about AI Voice Agents, VedaKosa, AI Visibility or your next step with David.</p></div><button type="button" class="voice-panel__enable" data-enable-voice>Enable voice demo</button><p class="voice-panel__privacy">Enabling voice loads our third-party voice service. <a href="/privacy">Privacy details</a>. Your microphone starts only when you choose.</p><div id="sma-voice-widget"></div><p class="voice-panel__status" role="status" data-voice-status>Enable the demo, then use the microphone control to speak.</p><button type="button" class="voice-dock__book">Book a call with David</button></div>';
     document.body.appendChild(dock);
     dock.querySelector('.voice-panel__close').addEventListener('click',function(){dock.open=false;dock.querySelector('summary').focus();});
     dock.querySelector('.voice-dock__book').addEventListener('click',function(){var link=document.querySelector('a[data-booking-open]');if(link)link.click();});
@@ -64,11 +64,14 @@
     script.onload = function () {
       // The vendor exposes this rescan hook for widgets mounted after page load.
       if (window.widgetLib && typeof window.widgetLib.scanWidgets === 'function') window.widgetLib.scanWidgets();
-      var observer = new MutationObserver(function () {
-        if (!mount.querySelector('.wcw-widget-container')) return;
+      function ready() {
+        if (!mount.querySelector('.wcw-widget-container')) return false;
         document.querySelectorAll('[data-voice-status]').forEach(function (el) { el.textContent = 'The voice widget is ready. Use its on-screen control to start. Microphone access is only needed if you choose to speak.'; });
-        observer.disconnect();
-      });
+        return true;
+      }
+      // The vendor may mount synchronously before the load event fires.
+      if (ready()) return;
+      var observer = new MutationObserver(function () { if (ready()) observer.disconnect(); });
       observer.observe(mount, { childList: true, subtree: true });
       setTimeout(function () {
         if (!mount.querySelector('.wcw-widget-container')) {
@@ -124,7 +127,7 @@
       document.querySelectorAll('[data-mega-trigger]').forEach(function (other) { other.setAttribute('aria-expanded','false');other.closest('.nav__item').classList.remove('is-expanded'); });
       item.classList.toggle('is-expanded',open);trigger.setAttribute('aria-expanded',String(open));
     });
-    trigger.closest('.nav__item').addEventListener('pointerenter',function(event){if(event.pointerType==='touch')return;trigger.click();});
+    trigger.closest('.nav__item').addEventListener('pointerenter',function(event){if(event.pointerType==='touch'||trigger.getAttribute('aria-expanded')==='true')return;trigger.click();});
     trigger.closest('.nav__item').addEventListener('pointerleave',function(event){if(!event.currentTarget.contains(document.activeElement)){event.currentTarget.classList.remove('is-expanded');trigger.setAttribute('aria-expanded','false');}});
     trigger.closest('.nav__item').addEventListener('focusout',function(event){if(!event.currentTarget.contains(event.relatedTarget)){event.currentTarget.classList.remove('is-expanded');trigger.setAttribute('aria-expanded','false');}});
   });

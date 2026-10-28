@@ -7,7 +7,7 @@ export function createWorkflows({api,$,esc,panel,table,empty,date,status,role}){
  let days=30,device='',offset=0,query='',stage='',interest='',board=false,current=null,rows=[],total=0,queueFilter='all',summaryHtml='';
  const money=n=>n===null||n===undefined?'Not estimated':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:0,maximumFractionDigits:2}).format(n);
  const stages=['new','contacted','qualified','booked','won','closed'];
- const interests=['AI Voice Agents','VedaKosa','Existing client support','Not sure yet'];
+ const interests=['AI Voice Agents','VedaKosa','AI Visibility','Existing client support','Not sure yet'];
  const guard=fn=>async(...args)=>{try{await fn(...args);}catch(e){status(e.message,true);}};
  const option=(values,label)=>`<option value="">${label}</option>`+values.map(v=>`<option>${esc(v)}</option>`).join('');
  const taskRows=(tasks,details=false)=>tasks.length?tasks.map(t=>`<article class="task-row ${t.status==='open'&&new Date(t.due_at)<new Date()?'overdue':''}"><div><strong>${esc(t.title)}</strong><p>${details?esc(t.name)+' · ':''}${esc(date(t.due_at))}${t.status==='completed'?' · Completed':''}</p></div><div class="row-actions">${details?`<button data-open-id="${esc(t.lead_id)}">Open lead</button>`:''}${t.status==='open'?`<button data-complete="${esc(t.id)}">Complete</button>`:''}</div></article>`).join(''):empty('No follow-ups in this view. Open a lead to schedule the next action.');

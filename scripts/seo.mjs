@@ -83,7 +83,7 @@ export function applySeo(files, articles) {
     });
     const organization = {
       '@type':'Organization','@id':`${siteUrl}/#organization`,name:'Strategic Marketing Advisors, LLC',url:`${siteUrl}/`,
-      description:'Founder-led AI Voice Agent and VedaKosa business system consulting from Cashiers, North Carolina, with AI Visibility support for core clients.',
+      description:'Founder-led AI Voice Agent and VedaKosa business system consulting from Cashiers, North Carolina, with independent AI Visibility assessment and implementation services.',
       logo:absolute('assets/logo.svg'),image:absolute('assets/images/david-and-mary-life.webp'),telephone:'+1-877-355-8745',email:'hello@strategicmarketingadvisors.com',
       address:{'@type':'PostalAddress',postOfficeBoxNumber:'2534',addressLocality:'Cashiers',addressRegion:'NC',postalCode:'28717',addressCountry:'US'},
       areaServed:{'@type':'Country',name:'United States'},

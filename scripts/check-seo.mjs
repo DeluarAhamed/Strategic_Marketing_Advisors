@@ -23,7 +23,8 @@ for(const file of files){
   assert.equal($('script[src="https://d2cqc7yqzf8c8f.cloudfront.net/web-widget.js"]').length,0,`${file}: widget requires consent`);
   assert.ok($('script[src$="site-ui.js"]').length,`${file}: consent loader`);
   assert.ok(!/Google Ads|Brand Kit|Web Design|Reputation Management/.test($('header[data-site-header]').text()),`${file}: retired services are not promoted`);
-  assert.equal($('#mega-resources .mega__menu .mega__link').length,3,`${file}: three simple resource links`);
+  assert.equal($('#mega-resources .mega__menu .mega__link').length,4,`${file}: resource guides and assessments`);
+  assert.equal($('#mega-services .mega__menu .mega__group').length,2,`${file}: services and assessments columns`);
   assert.equal($('#booking-dialog').length,1,`${file}: one on-site booking dialog`);
   assert.equal($('#booking-dialog iframe').attr('src'),undefined,`${file}: hidden calendar is not loaded in the source`);
   $('a[data-booking-open]').each((i,e)=>assert.equal($(e).attr('href'),calendar,`${file}: booking popup has a working calendar fallback`));
@@ -31,7 +32,7 @@ for(const file of files){
     assert.equal($('main iframe[data-booking-src]').attr('data-booking-src'),calendar,'Contact uses the supplied calendar');
     assert.equal($('main iframe[data-booking-src]').attr('src'),undefined,'Calendar is not loaded before consent');
     assert.equal($('form[data-sma-lead-form]').length,1,'Contact has the connected private inquiry form');
-    assert.deepEqual($('form[data-sma-lead-form] select[name="interest"] option').toArray().map(e=>$(e).attr('value')??$(e).text()),['','AI Voice Agents','VedaKosa','Existing client support','Not sure yet'],'Contact service choices must be selectable options');
+    assert.deepEqual($('form[data-sma-lead-form] select[name="interest"] option').toArray().map(e=>$(e).attr('value')??$(e).text()),['','AI Voice Agents','VedaKosa','AI Visibility','Existing client support','Not sure yet'],'Contact service choices must be selectable options');
     assert.equal($('form[data-email-handoff],form[data-netlify]').length,0,'Old contact/email handoff forms removed');
   }
   if(file==='about/faq.html')assert.ok($('.faq-group details').length>=20,'FAQ includes the supplied topics');
@@ -47,7 +48,9 @@ for(const file of files){
   const description=$('meta[name="description"]').attr('content');
   assert.ok(!descriptions.has(description),`${file}: duplicate description`);descriptions.add(description);
   assert.ok(description.length>=40,`${file}: meaningful description`);
-  $('a[href]').each((i,e)=>{const href=$(e).attr('href');if(!/^(https?:|mailto:|tel:)/.test(href))assert.ok(!/\.html(?:[?#]|$)/.test(href),`${file}: clean internal URL ${href}`);});
+  $('a[href]').each((i,e)=>{const href=$(e).attr('href');if(!/^(https?:|mailto:|tel:)/.test(href))assert.ok(!/\.html(?:[?#]|$)/.test(href),`${file}: clean internal URL ${href}`);
+    if(/^https?:\/\//.test(href)&&!/^https:\/\/(?:www\.)?strategicmarketingadvisors\.com(?:\/|$)/.test(href)&&!href.startsWith(siteUrl+'/')){assert.equal($(e).attr('target'),'_blank',`${file}: external links keep SMA open`);assert.match($(e).attr('rel')||'',/noopener/,`${file}: safe new tab`);}
+  });
   const graph=JSON.parse($('script[type="application/ld+json"]').html())['@graph'];
   assert.ok(graph.some(e=>e['@type']==='Organization'),`${file}: organization`);
   assert.ok(!graph.some(e=>['LocalBusiness','ProfessionalService','AggregateRating'].includes(e['@type'])),`${file}: no unsupported physical-location/rating schema`);

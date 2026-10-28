@@ -1,6 +1,6 @@
 {
   "siteUrl": "https://strategic-marketing-advisors.vercel.app",
-  "modified": "2026-10-25",
+  "modified": "2026-10-29",
   "pages": {
     "index.html": [
       "AI Voice Agents & VedaKosa Business Systems | SMA",
@@ -8,7 +8,7 @@
     ],
     "services.html": [
       "AI Voice Agents & VedaKosa | Consulting & Growth | SMA",
-      "Explore SMA’s two signature services: AI Voice Agents and VedaKosa systems. AI Visibility supports core clients. Book a free strategy call or try the demo."
+      "Explore AI Voice Agents, VedaKosa private AI assistants and AI Visibility assessments with DIY, 30-day and 90-day options. Get a clear next step with SMA."
     ],
     "about.html": [
       "About SMA | AI Voice Agents & VedaKosa Consultants",
@@ -87,12 +87,12 @@
       "Give callers a helpful response 24/7. SMA builds AI Voice Agents for answering, appointment booking and lead follow-up. Hear the demo and discuss your business."
     ],
     "services/vedakosa.html": [
-      "VedaKosa AI Business System Implementation | SMA",
-      "Build a practical AI business system with SMA. VedaKosa connects business knowledge, workflows and team adoption through a focused, hands-on engagement."
+      "VedaKosa | Your Private AI Business Assistant | SMA",
+      "Meet VedaKosa: your private AI assistant on its own computer, working 24/7 with your email, calendar and business commitments. Your data stays yours."
     ],
     "services/ai-visibility.html": [
-      "SEO, AEO & AI Visibility for SMA Clients",
-      "SEO, answer engine optimization and local search support for clients using SMA’s AI Voice Agents or VedaKosa systems. Explore how AI Visibility fits."
+      "AI Visibility Assessment & 30/90-Day Programs | SMA",
+      "Get a free AI Visibility Assessment and a prioritized 30-day roadmap. Choose DIY, SMA’s 30-day done-for-you service or an extended 90-day program."
     ],
     "demo.html": [
       "Try the AI Voice Agent Demo | AI Front Desk | SMA",
@@ -113,6 +113,10 @@
     "resources/skool-community.html": [
       "Free AI & Marketing Community | The Next Level | SMA",
       "Learn how to turn AI and marketing ideas into practical weekly steps. Explore SMA’s free The Next Level Skool community and get a clear plan for participating."
+    ],
+    "resources/assessments.html": [
+      "Free Business & Website Assessments | AI Visibility | SMA",
+      "Find a useful starting point with SMA’s free business and website assessment guide. Check AI Visibility or explore LocalPromoVault tools and plan your next step."
     ]
   }
 }

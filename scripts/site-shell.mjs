@@ -33,6 +33,10 @@ export function applySiteShell($, relative) {
   $('a[href]').each((i,e)=>{
     const href=$(e).attr('href')||'';
     const text=$(e).text().trim();
+    // Keep SMA available when visitors explore another website, even without JS.
+    if (/^https?:\/\//i.test(href) && !/^https:\/\/(?:www\.)?strategicmarketingadvisors\.com(?:\/|$)/i.test(href) && !href.startsWith('https://strategic-marketing-advisors.vercel.app/')) {
+      $(e).attr({target:'_blank',rel:'noopener noreferrer'});
+    }
     if(/^book\b|^(schedule|request)\b.*(call|consultation|appointment|conversation)/i.test(text))$(e).attr('href',calendar);
     if($(e).attr('href')===calendar&&!$(e).is('[data-booking-external]')&&!/open calendar directly/i.test(text)&&!$(e).closest('noscript').length)$(e).attr({'data-booking-open':'','aria-haspopup':'dialog','aria-controls':'booking-dialog'});
     const legacy=Object.entries(retired).find(([file])=>href.split(/[?#]/)[0]===`/${file.replace(/\.html$/,'')}`||href.endsWith(file));

@@ -9,6 +9,7 @@ const photos={
   'demo.html':editorial+'ai-automation.jpg',
   'resources.html':editorial+'about-workshop.jpg',
   'resources/marketing-resources.html':editorial+'strategy-planning.jpg',
+  'resources/assessments.html':editorial+'seo-local.jpg',
   'resources/skool-community.html':editorial+'about-workshop.jpg',
   'blog.html':editorial+'strategy-planning.jpg',
   'contact.html':editorial+'executive-consulting.jpg',
@@ -32,8 +33,8 @@ export function applyVisualShell($,relative){
       const card=$(e);if(i>1)return;
       card.addClass('signature-card');card.find('.signature-card__visual').remove();
       card.prepend(`<div class="signature-card__visual"><img src="${editorial+(i===0?'ai-automation.jpg':'strategy-planning.jpg')}" alt="${i===0?'AI tools supporting a responsive business front desk':'Business planning and connected workflows'}"><span>${i===0?'Answer • Book • Follow up':'Knowledge • Workflows • Team'}</span></div>`);
-      card.find('h3').text(i===0?'A front desk that keeps up with your customers.':'An AI system your team can actually use.');
-      card.find('p').not('.focus-card__label').first().text(i===0?'When you are on a job, helping a customer or closed for the day, your next caller still needs an answer. Give routine calls a clear path to an appointment or a person.':'Too many tools and scattered information slow everyone down. VedaKosa brings your business knowledge and agreed workflows into one practical way of working.');
+      card.find('h3').text(i===0?'A front desk that keeps up with your customers.':'Your private AI assistant. On its own computer.');
+      card.find('p').not('.focus-card__label').first().text(i===0?'When you are on a job, helping a customer or closed for the day, your next caller still needs an answer. Give routine calls a clear path to an appointment or a person.':'VedaKosa works 24/7 and remembers your business context. It helps with email, calendars, commitments and connected tools. Your data stays yours, not shared.');
     });
   }
   if(['index.html','about.html','about/founders.html','about/veteran-owned.html','about/testimonials.html','services.html','services/ai-voice-agents.html','services/vedakosa.html','about/philosophy.html'].includes(relative)){
