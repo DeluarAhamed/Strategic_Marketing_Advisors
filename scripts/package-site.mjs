@@ -15,7 +15,7 @@ for(const dir of ['.','about','articles','services','resources']){
   const relative=dir==='.'?name:dir+'/'+name;
   fs.mkdirSync(path.dirname(path.join(templates,relative)),{recursive:true});
   fs.copyFileSync(path.join(root,relative),path.join(templates,relative));
-  if(!['404.html','success.html'].includes(relative))manifest[relative==='index.html'?'/':'/'+relative.replace(/\.html$/,'')]=relative;
+  if(!['404.html','success.html','retired-account.html'].includes(relative))manifest[relative==='index.html'?'/':'/'+relative.replace(/\.html$/,'')]=relative;
  }
 }
 fs.writeFileSync(path.join(templates,'manifest.json'),JSON.stringify(manifest));

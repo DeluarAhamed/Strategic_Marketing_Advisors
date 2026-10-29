@@ -18,7 +18,7 @@ export function applySeo(files, articles) {
     const relative = path.relative(root, file).replaceAll(path.sep, '/');
     const $ = cheerio.load(fs.readFileSync(file, 'utf8'));
     const article = articles.find(a => relative === `articles/${a.slug}.html`);
-    const utility = ['404.html', 'success.html'].includes(relative) || !!retired[relative];
+    const utility = ['404.html', 'success.html','retired-account.html'].includes(relative) || !!retired[relative];
     const [title, description] = retired[relative] ? ['Our Current AI Services | Strategic Marketing Advisors', 'Explore SMA’s current services: AI Voice Agents, VedaKosa private AI assistants and independent AI Visibility assessment and implementation programs.'] : seo.pages[relative] || [article ? `${article.title} | SMA` : $('title').text(), article?.description || $('meta[name="description"]').attr('content') || $('h1').text()];
     const url = absolute(canonicalPath(relative));
     const image = absolute(article?.cardImage || 'assets/images/david-and-mary-life.webp');

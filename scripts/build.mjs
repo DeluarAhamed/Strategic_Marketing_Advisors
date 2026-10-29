@@ -147,7 +147,7 @@ for (const file of htmlFiles) {
 applySeo(htmlFiles, articles);
 
 const urls = htmlFiles
-  .filter((file) => !file.endsWith(`${path.sep}404.html`) && !file.endsWith(`${path.sep}success.html`) && !retired[path.relative(root, file).replaceAll(path.sep, '/')])
+  .filter((file) => !['404.html','success.html','retired-account.html'].includes(path.basename(file)) && !retired[path.relative(root, file).replaceAll(path.sep, '/')])
   .map((file) => {
     const relative = path.relative(root, file).replaceAll(path.sep, "/");
     const location = canonicalPath(relative);

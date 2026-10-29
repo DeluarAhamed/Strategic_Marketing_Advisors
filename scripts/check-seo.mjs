@@ -12,7 +12,7 @@ const titles=new Set();
 const descriptions=new Set();
 for(const file of files){
   const $=cheerio.load(fs.readFileSync(file,'utf8'));
-  const utility=['404.html','success.html'].includes(file)||!!retired[file];
+  const utility=['404.html','success.html','retired-account.html'].includes(file)||!!retired[file];
   assert.equal($('h1').length,1,`${file}: exactly one H1`);
   assert.equal($('main').length,1,`${file}: main landmark`);
   assert.ok($('title').text().trim(),`${file}: title`);
@@ -69,6 +69,7 @@ for(const file of files){
 }
 assert.ok(!sitemap.includes('.html'), 'Sitemap uses clean URLs');
 assert.ok(!sitemap.includes('/404')&&!sitemap.includes('/success'),'Utility pages excluded');
+assert.ok(!sitemap.includes('/retired-account'),'Retired portal notice excluded from sitemap');
 assert.ok(fs.readFileSync('robots.txt','utf8').includes(`${siteUrl}/sitemap.xml`),'Robots sitemap origin');
 const llms=fs.readFileSync('llms.txt','utf8');
 assert.ok(llms.includes(siteUrl+'/services/ai-voice-agents'),'Discovery file uses the active origin');
@@ -77,6 +78,7 @@ for(const match of llms.matchAll(/\]\((https:\/\/[^)]+)\)/g)){
  const u=new URL(match[1]);if(u.origin===siteUrl)assert.ok(files.some(file=>canonicalPath(file)===u.pathname),`Discovery link resolves: ${u.pathname}`);
 }
 const redirectMap=JSON.parse(fs.readFileSync('content/legacy-redirects.json','utf8')),hosting=JSON.parse(fs.readFileSync('vercel.json','utf8'));
+for(const source of JSON.parse(fs.readFileSync('content/retired-customer-paths.json','utf8')))assert.ok(hosting.rewrites.some(r=>r.source===source&&r.destination==='/api/render?route=/retired-customer'),`Retired customer path is not the staff login: ${source}`);
 for(const [source,destination] of Object.entries(redirectMap)){
  assert.ok(files.some(file=>canonicalPath(file)===destination),`Legacy destination exists: ${destination}`);
  assert.ok(hosting.redirects.some(r=>r.source===source&&r.destination===destination&&r.statusCode===301),`Legacy redirect is explicit 301: ${source}`);

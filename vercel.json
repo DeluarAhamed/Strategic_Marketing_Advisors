@@ -6,6 +6,70 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/sign-up",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/reset-password",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/my-ebook-orders",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/checkout",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/checkout/purchase-confirmation",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/checkout/transaction-failed",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/checkout/purchase-history",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/about-our-memberships",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/thank-you",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/thank_you",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/cancel_payment",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/register",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/account",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/password-reset",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/edit-profile",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
+      "source": "/log-in",
+      "destination": "/api/render?route=/retired-customer"
+    },
+    {
       "source": "/studio/:path*",
       "destination": "/studio"
     },

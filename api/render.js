@@ -10,6 +10,9 @@ export default async function handler(req,res){
  if(!['GET','HEAD'].includes(req.method)){res.statusCode=405;res.setHeader('Allow','GET, HEAD');res.end();return;}
  const url=new URL(req.url,'https://local.invalid');const route=(url.searchParams.get('route')||'/').replace(/\/$/,'')||'/';
  if(!/^\/[a-z0-9/.-]*$/.test(route)||route.includes('..')){res.statusCode=404;res.end('Not found');return;}
+ if(route==='/retired-customer'){
+  res.statusCode=410;res.setHeader('Cache-Control','public, max-age=300');res.setHeader('X-Robots-Tag','noindex, nofollow');res.setHeader('Content-Type','text/html; charset=utf-8');res.end(req.method==='HEAD'?'':read('retired-account.html'));return;
+ }
  try{
   const all=await publishedContent();
   res.setHeader('Cache-Control','public, max-age=0, s-maxage=30, stale-while-revalidate=15');

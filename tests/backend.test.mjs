@@ -1,6 +1,7 @@
 import {test,beforeEach} from 'node:test';
 import assert from 'node:assert/strict';
 import {renderContent} from '../lib/render-content.mjs';
+import renderHandler from '../api/render.js';
 import {changeLabel,csvCell} from '../dashboard/workflows.js';
 import {auditHtml,auditSite,providerState,syncGoogle,parseSemrush} from '../supabase/functions/sma-api/reporting.ts';
 const realFetch=globalThis.fetch;
@@ -50,5 +51,10 @@ test('published service metadata follows approved CMS copy',()=>{
  const html='<html><head><script type="application/ld+json">{"@graph":[{"@type":"Service","name":"AI Voice Agents","description":"Old"}]}</script></head><body><main><section class="phero"><h1>Old</h1><p class="lead-xl"></p></section></main></body></html>';
  const out=renderContent(html,{kind:'page',content:{title:'Voice service',description:'Updated approved service description',sections:[]}},'/services/ai-voice-agents');
  assert.ok(out.includes('"description":"Updated approved service description"'));assert.ok(out.includes('"name":"AI Voice Agents"'));assert.ok(out.includes('/services/ai-voice-agents#service'));
+});
+test('retired customer routes return 410 without querying private data',async()=>{
+ const headers={},res={statusCode:200,setHeader:(name,value)=>{headers[name]=value;},end:()=>{}};
+ await renderHandler({method:'HEAD',url:'/api/render?route=/retired-customer'},res);
+ assert.equal(res.statusCode,410);assert.equal(headers['X-Robots-Tag'],'noindex, nofollow');assert.equal(writes.length,0);
 });
 process.on('exit',()=>{globalThis.fetch=realFetch;});

@@ -1,0 +1,18 @@
+[
+  "/sign-up",
+  "/reset-password",
+  "/my-ebook-orders",
+  "/checkout",
+  "/checkout/purchase-confirmation",
+  "/checkout/transaction-failed",
+  "/checkout/purchase-history",
+  "/about-our-memberships",
+  "/thank-you",
+  "/thank_you",
+  "/cancel_payment",
+  "/register",
+  "/account",
+  "/password-reset",
+  "/edit-profile",
+  "/log-in"
+]

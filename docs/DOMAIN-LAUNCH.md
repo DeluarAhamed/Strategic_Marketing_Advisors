@@ -43,6 +43,6 @@ No DNS edits have been made by Codex. Do not describe the custom domain as launc
 
 ## Backup and legacy pages
 
-A local export of all 55 published posts and 58 published pages was saved as `outputs/legacy-wordpress-public-backup-2026-10-30.json`. This is a content export, not a full WordPress files/database/order backup. David should preserve the old VPS files and database. The old customer membership, checkout and account workflows are not implemented by the new staff-only SMA dashboard; their use needs confirmation before redirecting those paths or retiring customer access.
+A local export of all 55 published posts and 58 published pages was saved as `outputs/legacy-wordpress-public-backup-2026-10-30.json`. This is a content export, not a full WordPress files/database/order backup. David should preserve the old VPS files and database. On 30 October the user confirmed that the old customer pages should be retired. Sixteen account, signup, membership, checkout and related URLs now return a helpful HTTP 410 notice linking to Contact SMA, without redirecting customers into the staff-only dashboard. The remaining unmigrated content is preserved in the export for later review; these old public articles are not silently replaced by unrelated content.
 
 After the real DNS points to Vercel, verify HTTPS and actual on-domain form/booking/widget behavior, then enable a host-specific permanent redirect from the Vercel staging hostname to the real domain. Do not redirect the staging host to the still-old WordPress site before DNS cutover.
