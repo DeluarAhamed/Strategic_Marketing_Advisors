@@ -219,6 +219,12 @@
   ],
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "strategic-marketing-advisors.vercel.app" }],
+      "destination": "https://strategicmarketingadvisors.com/:path*",
+      "permanent": true
+    },
+    {
       "source": "/services/google-ads",
       "destination": "/services",
       "permanent": true

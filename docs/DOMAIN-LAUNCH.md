@@ -1,6 +1,6 @@
 # SMA domain launch — instructions for David
 
-Updated 30 October 2026. Vercel ownership verification succeeded for both `strategicmarketingadvisors.com` and `www.strategicmarketingadvisors.com`. The real-domain website DNS switch is still pending at David's HostGator VPS.
+Updated 30 October 2026. Ownership verification and the authorized HostGator DNS cutover are complete for `strategicmarketingadvisors.com` and `www.strategicmarketingadvisors.com`. Both root A records and the www CNAME use the values below with TTL 600. Vercel reports both domains correctly configured; authoritative DNS and Cloudflare public DNS confirm the new addresses.
 
 The launch configuration now uses `https://strategicmarketingadvisors.com` for canonicals, schema, sitemap, robots, llms.txt, the public CMS origin and dashboard recovery. Exact apex/www API origins are allowed, and the existing Vercel origin remains supported during migration. Supabase's two exact SMA callbacks (`/admin` and `/admin?mode=reset`) were saved without changing the unrelated application's default Site URL or existing callback entries.
 
@@ -39,10 +39,10 @@ Before Step 2: verify ownership; configure exact public-site API origins; add ex
 
 After Step 2: verify DNS, HTTPS certificate, apex/www redirect, public pages, contact form-to-dashboard, consent, Kate's widget allowed domains and David's booking popup on the actual custom domain. Preserve the existing Vercel URL while testing. DNS propagation and certificate issuance may take time. The existing apex record had a four-hour configured TTL when checked.
 
-No DNS edits have been made by Codex. Do not describe the custom domain as launched until those checks pass.
+Codex changed only the existing exact root A record, added the second root A record and updated the exact www CNAME in the signed-in HostGator WHM zone editor with the user's authorization. No email, nameserver, TXT or unrelated subdomain records were edited. HTTPS on both Vercel addresses works; www returns a permanent redirect to the apex. The updated homepage, booking consent gate and embedded David calendar were verified in the browser on the real domain. Retired account pages return HTTP 410 and robots.txt references the real-domain sitemap. Some existing DNS caches can still retain the former address for its old four-hour TTL.
 
 ## Backup and legacy pages
 
 A local export of all 55 published posts and 58 published pages was saved as `outputs/legacy-wordpress-public-backup-2026-10-30.json`. This is a content export, not a full WordPress files/database/order backup. David should preserve the old VPS files and database. On 30 October the user confirmed that the old customer pages should be retired. Sixteen account, signup, membership, checkout and related URLs now return a helpful HTTP 410 notice linking to Contact SMA, without redirecting customers into the staff-only dashboard. The remaining unmigrated content is preserved in the export for later review; these old public articles are not silently replaced by unrelated content.
 
-After the real DNS points to Vercel, verify HTTPS and actual on-domain form/booking/widget behavior, then enable a host-specific permanent redirect from the Vercel staging hostname to the real domain. Do not redirect the staging host to the still-old WordPress site before DNS cutover.
+The production configuration now permanently redirects only the exact former staging hostname `strategic-marketing-advisors.vercel.app` to the real domain, preserving paths. Preview deployment hosts are unaffected.
