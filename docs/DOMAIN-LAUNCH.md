@@ -1,6 +1,8 @@
 # SMA domain launch — instructions for David
 
-Prepared 29 October 2026. The updated site is live at https://strategic-marketing-advisors.vercel.app/ . The custom domain is attached to its Vercel project but ownership verification and DNS cutover are pending.
+Updated 30 October 2026. Vercel ownership verification succeeded for both `strategicmarketingadvisors.com` and `www.strategicmarketingadvisors.com`. The real-domain website DNS switch is still pending at David's HostGator VPS.
+
+The launch configuration now uses `https://strategicmarketingadvisors.com` for canonicals, schema, sitemap, robots, llms.txt, the public CMS origin and dashboard recovery. Exact apex/www API origins are allowed, and the existing Vercel origin remains supported during migration. Supabase's two exact SMA callbacks (`/admin` and `/admin?mode=reset`) were saved without changing the unrelated application's default Site URL or existing callback entries.
 
 ## Where to edit
 
@@ -17,7 +19,7 @@ Add both records at the existing DNS host. If its editor requires full names, us
 | TXT | `_vercel` | `vc-domain-verify=strategicmarketingadvisors.com,3060f2f6526f0b30612a` | 600 or provider default |
 | TXT | `_vercel` | `vc-domain-verify=www.strategicmarketingadvisors.com,531975bea818d65a394c` | 600 or provider default |
 
-Tell us when these are saved. We then verify both domains in Vercel and finish the application's custom-domain configuration before traffic moves. A subsequent check found the hostname entered as one TXT value and `c-domain-verify` (missing the initial `v`) as the other; replace those incorrect values with the exact strings above.
+Both TXT records now match and both domains are verified in Vercel. Preserve these values. Earlier incorrect values were corrected by David before verification on 30 October.
 
 ## Step 2 — website records, after application readiness is confirmed
 
@@ -38,3 +40,9 @@ Before Step 2: verify ownership; configure exact public-site API origins; add ex
 After Step 2: verify DNS, HTTPS certificate, apex/www redirect, public pages, contact form-to-dashboard, consent, Kate's widget allowed domains and David's booking popup on the actual custom domain. Preserve the existing Vercel URL while testing. DNS propagation and certificate issuance may take time. The existing apex record had a four-hour configured TTL when checked.
 
 No DNS edits have been made by Codex. Do not describe the custom domain as launched until those checks pass.
+
+## Backup and legacy pages
+
+A local export of all 55 published posts and 58 published pages was saved as `outputs/legacy-wordpress-public-backup-2026-10-30.json`. This is a content export, not a full WordPress files/database/order backup. David should preserve the old VPS files and database. The old customer membership, checkout and account workflows are not implemented by the new staff-only SMA dashboard; their use needs confirmation before redirecting those paths or retiring customer access.
+
+After the real DNS points to Vercel, verify HTTPS and actual on-domain form/booking/widget behavior, then enable a host-specific permanent redirect from the Vercel staging hostname to the real domain. Do not redirect the staging host to the still-old WordPress site before DNS cutover.

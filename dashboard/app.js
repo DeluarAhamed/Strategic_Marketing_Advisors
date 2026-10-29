@@ -71,7 +71,7 @@ $('#login-form').addEventListener('submit',async event=>{
    await auth('user',{password:form.elements.password.value},{method:'PUT',authenticated:true});
    session=null;sessionStorage.removeItem('sma-dashboard-session');form.elements.email.value=user.email||'';form.elements.password.value='';form.elements.passwordConfirmation.value='';setAuthMode('signin');$('#login-status').textContent='Your password has been updated. Sign in with your new password.';return;
   }
-  const data=await auth(create?'signup':'token?grant_type=password',{email:form.elements.email.value.trim(),password:form.elements.password.value});
+  const data=await auth(create?'signup?redirect_to='+encodeURIComponent(config.siteUrl+'/admin'):'token?grant_type=password',{email:form.elements.email.value.trim(),password:form.elements.password.value});
   form.elements.password.value='';form.elements.passwordConfirmation.value='';
   if(data.access_token){remember({...data,expires_at:Math.floor(Date.now()/1000)+data.expires_in});await start();$('#login-status').textContent='';}
   else {$('#login-status').textContent='If this is a new account, check your email to confirm it. If you used this email before, its existing password has not changed. Go back to sign in and use Forgot your password if needed.';}

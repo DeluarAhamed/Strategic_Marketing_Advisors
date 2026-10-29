@@ -1,5 +1,5 @@
 import {load} from 'cheerio';
-const site='https://strategic-marketing-advisors.vercel.app';
+const site='https://strategicmarketingadvisors.com';
 const scopes='https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/webmasters.readonly';
 let googleToken={value:'',expires:0};
 const encode=(v:Uint8Array|string)=>btoa(typeof v==='string'?v:String.fromCharCode(...v)).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'');

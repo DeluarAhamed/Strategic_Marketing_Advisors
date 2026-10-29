@@ -4,7 +4,7 @@
 
 ## Business information
 
-- Website: https://strategic-marketing-advisors.vercel.app/
+- Website: https://strategicmarketingadvisors.com/
 - Founders: Mary Eule Scarborough and David A. Scarborough.
 - Founded in 2004. SMA is intentionally home-based and remote-first. It has no public customer-facing office; occasional local visits are arranged individually.
 - Who SMA helps: local home-service businesses, including HVAC, plumbing, electrical and roofing contractors. Other business owners can discuss fit with David.
@@ -16,10 +16,10 @@
 
 ## Services
 
-- [AI Voice Agents](https://strategic-marketing-advisors.vercel.app/services/ai-voice-agents): an AI front desk configured around a business's services, approved questions, appointment rules and human handoffs. Helps answer calls, capture lead details and support booking and follow-up through the agreed integrations.
-- [Talk with Kate in the voice demo](https://strategic-marketing-advisors.vercel.app/demo): Kate is SMA's AI assistant and demo, not the name of the voice-agent product. Voice loads only after visitor consent, and microphone access is needed only when the visitor chooses to speak.
-- [VedaKosa Private AI Assistant](https://strategic-marketing-advisors.vercel.app/services/vedakosa): a private AI assistant on its own computer, working 24/7 with authorized email, calendar, commitments and connected tools. It remembers business context. Data ownership, permissions, integrations and action approvals are agreed during setup; connections to other services are reviewed with the client.
-- [AI Visibility Assessment and Programs](https://strategic-marketing-advisors.vercel.app/services/ai-visibility): start with a free assessment and prioritized 30-day roadmap. Choose DIY, a 30-day done-for-you engagement or an extended 90-day program. No AI Voice Agent or VedaKosa purchase is required. Search rankings and AI recommendations are not guaranteed.
+- [AI Voice Agents](https://strategicmarketingadvisors.com/services/ai-voice-agents): an AI front desk configured around a business's services, approved questions, appointment rules and human handoffs. Helps answer calls, capture lead details and support booking and follow-up through the agreed integrations.
+- [Talk with Kate in the voice demo](https://strategicmarketingadvisors.com/demo): Kate is SMA's AI assistant and demo, not the name of the voice-agent product. Voice loads only after visitor consent, and microphone access is needed only when the visitor chooses to speak.
+- [VedaKosa Private AI Assistant](https://strategicmarketingadvisors.com/services/vedakosa): a private AI assistant on its own computer, working 24/7 with authorized email, calendar, commitments and connected tools. It remembers business context. Data ownership, permissions, integrations and action approvals are agreed during setup; connections to other services are reviewed with the client.
+- [AI Visibility Assessment and Programs](https://strategicmarketingadvisors.com/services/ai-visibility): start with a free assessment and prioritized 30-day roadmap. Choose DIY, a 30-day done-for-you engagement or an extended 90-day program. No AI Voice Agent or VedaKosa purchase is required. Search rankings and AI recommendations are not guaranteed.
 - [Get the free AI Visibility Assessment](https://mybizreport.com/sma/aeo)
 
 ## Founders and experience
@@ -27,28 +27,28 @@
 - Mary is a former Fortune 500 marketing executive, founder of two small businesses and Certified Guerrilla Marketing Coach. She holds a master's in marketing from Johns Hopkins.
 - David served 23 years as a U.S. Air Force officer and aviator, taught business at Charleston Southern University and holds an MBA from Golden Gate University. The 23-year figure refers to military service, not a stated number of marketing years.
 - Mary and David co-authored The Procrastinator's Guide to Marketing. The founders' published work also includes Mastering Online Marketing and Guerrilla Marketing on the Internet, co-authored by Mary.
-- [Meet Mary and David](https://strategic-marketing-advisors.vercel.app/about/founders)
-- [Veteran-owned](https://strategic-marketing-advisors.vercel.app/about/veteran-owned)
+- [Meet Mary and David](https://strategicmarketingadvisors.com/about/founders)
+- [Veteran-owned](https://strategicmarketingadvisors.com/about/veteran-owned)
 
 ## Start here
 
-- [Services](https://strategic-marketing-advisors.vercel.app/services)
-- [Frequently asked questions](https://strategic-marketing-advisors.vercel.app/about/faq)
-- [Our approach](https://strategic-marketing-advisors.vercel.app/about/philosophy)
-- [Contact and booking](https://strategic-marketing-advisors.vercel.app/contact)
-- [Testimonials](https://strategic-marketing-advisors.vercel.app/about/testimonials): feedback about books, courses and consulting; not a source of an aggregate business star rating.
+- [Services](https://strategicmarketingadvisors.com/services)
+- [Frequently asked questions](https://strategicmarketingadvisors.com/about/faq)
+- [Our approach](https://strategicmarketingadvisors.com/about/philosophy)
+- [Contact and booking](https://strategicmarketingadvisors.com/contact)
+- [Testimonials](https://strategicmarketingadvisors.com/about/testimonials): feedback about books, courses and consulting; not a source of an aggregate business star rating.
 
 ## Free resources
 
-- [Blog](https://strategic-marketing-advisors.vercel.app/blog): practical marketing and business guidance.
-- [Free assessments guide](https://strategic-marketing-advisors.vercel.app/resources/assessments): choose a tool, understand the findings and plan a useful next step.
-- [LocalPromoVault guide](https://strategic-marketing-advisors.vercel.app/resources/marketing-resources): free marketing resources and assessment tools.
-- [The Next Level community guide](https://strategic-marketing-advisors.vercel.app/resources/skool-community): free Skool community for practical AI and marketing learning.
-- [Books from the founders](https://strategic-marketing-advisors.vercel.app/articles/books)
+- [Blog](https://strategicmarketingadvisors.com/blog): practical marketing and business guidance.
+- [Free assessments guide](https://strategicmarketingadvisors.com/resources/assessments): choose a tool, understand the findings and plan a useful next step.
+- [LocalPromoVault guide](https://strategicmarketingadvisors.com/resources/marketing-resources): free marketing resources and assessment tools.
+- [The Next Level community guide](https://strategicmarketingadvisors.com/resources/skool-community): free Skool community for practical AI and marketing learning.
+- [Books from the founders](https://strategicmarketingadvisors.com/articles/books)
 
 ## Optional
 
-- [Privacy and cookie choices](https://strategic-marketing-advisors.vercel.app/privacy)
-- [Website terms](https://strategic-marketing-advisors.vercel.app/terms)
+- [Privacy and cookie choices](https://strategicmarketingadvisors.com/privacy)
+- [Website terms](https://strategicmarketingadvisors.com/terms)
 
 This file is a public, human-readable discovery guide. It grants no account access and does not replace robots.txt, authentication or the full website content. Published program scope, fees and support are agreed with David before an engagement.

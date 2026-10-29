@@ -3,7 +3,7 @@ import {providerState,syncGoogle,syncSemrush,auditSite} from './reporting.ts';
 const base=Deno.env.get('SUPABASE_URL')!;
 const service=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const anon=Deno.env.get('SUPABASE_ANON_KEY')!;
-const origins=new Set(['https://strategic-marketing-advisors.vercel.app','http://localhost:3000','http://localhost:3100']);
+const origins=new Set(['https://strategicmarketingadvisors.com','https://www.strategicmarketingadvisors.com','https://strategic-marketing-advisors.vercel.app','http://localhost:3000','http://localhost:3100']);
 const jsonHeaders={'Content-Type':'application/json','Cache-Control':'no-store'};
 const events=new Set(['page_view','booking_opened','voice_panel_opened','resource_clicked','phone_clicked','lead_submitted']);
 const interests=['AI Voice Agents','VedaKosa','AI Visibility','Existing client support','Not sure yet'];

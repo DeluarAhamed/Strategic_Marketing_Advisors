@@ -8,4 +8,4 @@ Disallow: /api/
 Disallow: /studio
 Disallow: /static/
 
-Sitemap: https://strategic-marketing-advisors.vercel.app/sitemap.xml
+Sitemap: https://strategicmarketingadvisors.com/sitemap.xml
