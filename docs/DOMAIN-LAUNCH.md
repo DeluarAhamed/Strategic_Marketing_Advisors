@@ -4,7 +4,7 @@ Prepared 29 October 2026. The updated site is live at https://strategic-marketin
 
 ## Where to edit
 
-The authoritative nameservers are currently `ns1.smahosting.com` and `ns2.smahosting.com`. Edit the DNS zone at that hosting provider (typically its hosting control panel). Buying the domain at GoDaddy does not mean GoDaddy currently manages the DNS zone.
+The delegated nameservers are `ns1.smahosting.com` and `ns2.smahosting.com`. David has confirmed the active DNS zone is on his HostGator VPS; the zone editor identifies its own nameservers as `ns1.50-6-5-34.www.hostgator.com` and `ns2.50-6-5-34.www.hostgator.com`. Edit that HostGator zone, not the inactive IONOS DNS table. The domain registrar or a separate hosting account does not necessarily manage the active DNS zone.
 
 Keep these nameservers. Preserve Google Workspace MX, SPF, DKIM, DMARC, and all other existing TXT records. Preserve the `atlas` subdomain and other unrelated subdomains. No registrar transfer or domain purchase is needed.
 
@@ -17,7 +17,7 @@ Add both records at the existing DNS host. If its editor requires full names, us
 | TXT | `_vercel` | `vc-domain-verify=strategicmarketingadvisors.com,3060f2f6526f0b30612a` | 600 or provider default |
 | TXT | `_vercel` | `vc-domain-verify=www.strategicmarketingadvisors.com,531975bea818d65a394c` | 600 or provider default |
 
-Tell us when these are saved. We then verify both domains in Vercel and finish the application's custom-domain configuration before traffic moves.
+Tell us when these are saved. We then verify both domains in Vercel and finish the application's custom-domain configuration before traffic moves. A subsequent check found the hostname entered as one TXT value and `c-domain-verify` (missing the initial `v`) as the other; replace those incorrect values with the exact strings above.
 
 ## Step 2 — website records, after application readiness is confirmed
 
@@ -33,7 +33,7 @@ Use TTL 600 if supported. Remove conflicting website A/AAAA records only after c
 
 ## Application cutover checklist
 
-Before Step 2: verify ownership; configure exact public-site API origins; add exact custom-domain authentication/recovery callbacks without changing the shared project's unrelated Auth site URL; update canonical URLs, sitemap, organization metadata and public CMS site URL together; deploy and verify.
+Before Step 2: verify ownership; configure exact public-site API origins; add exact custom-domain authentication/recovery callbacks without changing the shared project's unrelated Auth site URL; update canonical URLs, sitemap, robots, llms.txt, organization metadata and public CMS site URL together; deploy and verify. Review `legacy-url-inventory.json`: 24 clear replacements now have explicit 301s, two URLs are retained and 87 need a migration/retirement decision, including old articles and account/checkout pages.
 
 After Step 2: verify DNS, HTTPS certificate, apex/www redirect, public pages, contact form-to-dashboard, consent, Kate's widget allowed domains and David's booking popup on the actual custom domain. Preserve the existing Vercel URL while testing. DNS propagation and certificate issuance may take time. The existing apex record had a four-hour configured TTL when checked.
 

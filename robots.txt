@@ -1,3 +1,5 @@
+# Public search and AI crawlers may read public pages.
+# These exclusions are indexing preferences, not authentication.
 User-agent: *
 Allow: /
 Disallow: /admin

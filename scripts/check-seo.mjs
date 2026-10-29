@@ -4,6 +4,7 @@ import path from 'node:path';
 import * as cheerio from 'cheerio';
 import {canonicalPath, siteUrl} from './seo.mjs';
 import {retired,calendar} from './site-shell.mjs';
+import {serviceNames} from './discovery.mjs';
 const files=[];
 for(const dir of ['.','about','services','articles','resources'])for(const name of fs.readdirSync(dir))if(name.endsWith('.html'))files.push(path.join(dir,name).replaceAll('\\','/'));
 const sitemap=fs.readFileSync('sitemap.xml','utf8');
@@ -52,6 +53,13 @@ for(const file of files){
     if(/^https?:\/\//.test(href)&&!/^https:\/\/(?:www\.)?strategicmarketingadvisors\.com(?:\/|$)/.test(href)&&!href.startsWith(siteUrl+'/')){assert.equal($(e).attr('target'),'_blank',`${file}: external links keep SMA open`);assert.match($(e).attr('rel')||'',/noopener/,`${file}: safe new tab`);}
   });
   const graph=JSON.parse($('script[type="application/ld+json"]').html())['@graph'];
+  if(file==='about/faq.html'){
+    const faq=graph.find(n=>n['@type']==='FAQPage');
+    const normalize=s=>s.replace(/\s+/g,' ').trim();
+    assert.deepEqual(faq.mainEntity.map(q=>[normalize(q.name),normalize(q.acceptedAnswer.text)]),$('.faq-group details').toArray().map(e=>[normalize($(e).find('summary').text()),normalize($(e).find('p').text())]),'FAQ schema matches visible answers');
+    assert.ok(!$('main').text().includes('funded startups'),'FAQ reflects home-service ICP');
+  }
+  if(serviceNames[file])assert.equal(graph.find(n=>n['@type']==='Service').name,serviceNames[file],'Service schema has the actual product name');
   assert.ok(graph.some(e=>e['@type']==='Organization'),`${file}: organization`);
   assert.ok(!graph.some(e=>['LocalBusiness','ProfessionalService','AggregateRating'].includes(e['@type'])),`${file}: no unsupported physical-location/rating schema`);
   if(file.startsWith('services/'))assert.ok(graph.some(e=>e['@type']==='Service'),`${file}: service schema`);
@@ -62,4 +70,16 @@ for(const file of files){
 assert.ok(!sitemap.includes('.html'), 'Sitemap uses clean URLs');
 assert.ok(!sitemap.includes('/404')&&!sitemap.includes('/success'),'Utility pages excluded');
 assert.ok(fs.readFileSync('robots.txt','utf8').includes(`${siteUrl}/sitemap.xml`),'Robots sitemap origin');
+const llms=fs.readFileSync('llms.txt','utf8');
+assert.ok(llms.includes(siteUrl+'/services/ai-voice-agents'),'Discovery file uses the active origin');
+assert.ok(!llms.includes('{{SITE_URL}}'),'Discovery file has no template placeholders');
+for(const match of llms.matchAll(/\]\((https:\/\/[^)]+)\)/g)){
+ const u=new URL(match[1]);if(u.origin===siteUrl)assert.ok(files.some(file=>canonicalPath(file)===u.pathname),`Discovery link resolves: ${u.pathname}`);
+}
+const redirectMap=JSON.parse(fs.readFileSync('content/legacy-redirects.json','utf8')),hosting=JSON.parse(fs.readFileSync('vercel.json','utf8'));
+for(const [source,destination] of Object.entries(redirectMap)){
+ assert.ok(files.some(file=>canonicalPath(file)===destination),`Legacy destination exists: ${destination}`);
+ assert.ok(hosting.redirects.some(r=>r.source===source&&r.destination===destination&&r.statusCode===301),`Legacy redirect is explicit 301: ${source}`);
+ assert.ok(!redirectMap[destination],`No legacy redirect chain: ${source}`);
+}
 console.log(`SEO checks passed for ${files.length} public HTML pages: headings, metadata, canonicals, sitemap, structured data, internal URLs and form handoffs.`);

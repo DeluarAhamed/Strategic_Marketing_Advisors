@@ -6,6 +6,8 @@ import { writeText } from "./write-text.mjs";
 import { retired } from "./site-shell.mjs";
 
 const root = process.cwd();
+const backendConfig=JSON.parse(fs.readFileSync(path.join(root,'backend-config.json'),'utf8'));
+if(backendConfig.siteUrl!==siteUrl)throw new Error('SEO and backend siteUrl must be changed together for launch.');
 const contentDir = path.join(root, "content", "articles");
 const articleDir = path.join(root, "articles");
 

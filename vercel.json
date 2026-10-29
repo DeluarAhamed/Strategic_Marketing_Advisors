@@ -383,6 +383,126 @@
       "source": "/terms.html",
       "destination": "/terms",
       "permanent": true
+    },
+    {
+      "source": "/mary-and-david",
+      "destination": "/about/founders",
+      "statusCode": 301
+    },
+    {
+      "source": "/about-us",
+      "destination": "/about",
+      "statusCode": 301
+    },
+    {
+      "source": "/core-philosophies",
+      "destination": "/about/philosophy",
+      "statusCode": 301
+    },
+    {
+      "source": "/testimonials",
+      "destination": "/about/testimonials",
+      "statusCode": 301
+    },
+    {
+      "source": "/veteran-owned-business",
+      "destination": "/about/veteran-owned",
+      "statusCode": 301
+    },
+    {
+      "source": "/contact-us",
+      "destination": "/contact",
+      "statusCode": 301
+    },
+    {
+      "source": "/executive-business-consulting",
+      "destination": "/services",
+      "statusCode": 301
+    },
+    {
+      "source": "/articles",
+      "destination": "/blog",
+      "statusCode": 301
+    },
+    {
+      "source": "/recommend-books",
+      "destination": "/articles/books",
+      "statusCode": 301
+    },
+    {
+      "source": "/articles-blog-rolodex-books-we-recommend",
+      "destination": "/articles/books",
+      "statusCode": 301
+    },
+    {
+      "source": "/sma-call-widget",
+      "destination": "/demo",
+      "statusCode": 301
+    },
+    {
+      "source": "/google-ads-management",
+      "destination": "/services",
+      "statusCode": 301
+    },
+    {
+      "source": "/ai-software-automation",
+      "destination": "/services/vedakosa",
+      "statusCode": 301
+    },
+    {
+      "source": "/reputation-management",
+      "destination": "/services/ai-visibility",
+      "statusCode": 301
+    },
+    {
+      "source": "/google-business-profile-audit",
+      "destination": "/services/ai-visibility",
+      "statusCode": 301
+    },
+    {
+      "source": "/privacy-policy-pledge",
+      "destination": "/privacy",
+      "statusCode": 301
+    },
+    {
+      "source": "/terms-of-service",
+      "destination": "/terms",
+      "statusCode": 301
+    },
+    {
+      "source": "/phone-demeanor-and-etiquette",
+      "destination": "/articles/phone-etiquette",
+      "statusCode": 301
+    },
+    {
+      "source": "/direct-mail-design-and-copy-basics",
+      "destination": "/articles/direct-mail",
+      "statusCode": 301
+    },
+    {
+      "source": "/advertisings-best-mascots",
+      "destination": "/articles/best-mascots",
+      "statusCode": 301
+    },
+    {
+      "source": "/perception-if-we-only-knew-what-they-were-thinking",
+      "destination": "/articles/perception",
+      "statusCode": 301
+    },
+    {
+      "source": "/defining-your-businesss-character-and-personality",
+      "destination": "/articles/business-character",
+      "statusCode": 301
+    },
+    {
+      "source": "/finding-balance-in-your-life",
+      "destination": "/articles/finding-balance",
+      "statusCode": 301
+    },
+    {
+      "source": "/the-importance-of-checking-your-givens",
+      "destination": "/articles/checking-givens",
+      "statusCode": 301
     }
   ],
   "functions": {

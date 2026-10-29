@@ -1,0 +1,54 @@
+# Strategic Marketing Advisors (SMA)
+
+> Strategic Marketing Advisors, LLC is a veteran-owned, founder-led consultancy based in Cashiers, North Carolina, serving businesses remotely nationwide. SMA helps home-service business owners answer customer calls, follow up on opportunities and put practical AI to work. Its signature services are AI Voice Agents and VedaKosa. AI Visibility is also available independently.
+
+## Business information
+
+- Website: {{SITE_URL}}/
+- Founders: Mary Eule Scarborough and David A. Scarborough.
+- Founded in 2004. SMA is intentionally home-based and remote-first. It has no public customer-facing office; occasional local visits are arranged individually.
+- Who SMA helps: local home-service businesses, including HVAC, plumbing, electrical and roofing contractors. Other business owners can discuss fit with David.
+- Email: hello@strategicmarketingadvisors.com
+- Main website phone: 877-355-8745. Additional contact: 828-743-8733.
+- Mailing address: PO Box 2534, Cashiers, NC 28717, United States. This is a mailing address, not a public office address.
+- Office hours: Monday–Friday, 9am–5pm Eastern. No weekend appointments. The booking calendar is the source of availability.
+- [Book a free 30-minute strategy call with David](https://atlas.strategicmarketingadvisors.com/widget/bookings/smaic-calendar): choose a time and complete the booking to receive confirmation. Opening a calendar or speaking to Kate alone does not confirm an appointment.
+
+## Services
+
+- [AI Voice Agents]({{SITE_URL}}/services/ai-voice-agents): an AI front desk configured around a business's services, approved questions, appointment rules and human handoffs. Helps answer calls, capture lead details and support booking and follow-up through the agreed integrations.
+- [Talk with Kate in the voice demo]({{SITE_URL}}/demo): Kate is SMA's AI assistant and demo, not the name of the voice-agent product. Voice loads only after visitor consent, and microphone access is needed only when the visitor chooses to speak.
+- [VedaKosa Private AI Assistant]({{SITE_URL}}/services/vedakosa): a private AI assistant on its own computer, working 24/7 with authorized email, calendar, commitments and connected tools. It remembers business context. Data ownership, permissions, integrations and action approvals are agreed during setup; connections to other services are reviewed with the client.
+- [AI Visibility Assessment and Programs]({{SITE_URL}}/services/ai-visibility): start with a free assessment and prioritized 30-day roadmap. Choose DIY, a 30-day done-for-you engagement or an extended 90-day program. No AI Voice Agent or VedaKosa purchase is required. Search rankings and AI recommendations are not guaranteed.
+- [Get the free AI Visibility Assessment](https://mybizreport.com/sma/aeo)
+
+## Founders and experience
+
+- Mary is a former Fortune 500 marketing executive, founder of two small businesses and Certified Guerrilla Marketing Coach. She holds a master's in marketing from Johns Hopkins.
+- David served 23 years as a U.S. Air Force officer and aviator, taught business at Charleston Southern University and holds an MBA from Golden Gate University. The 23-year figure refers to military service, not a stated number of marketing years.
+- Mary and David co-authored The Procrastinator's Guide to Marketing. The founders' published work also includes Mastering Online Marketing and Guerrilla Marketing on the Internet, co-authored by Mary.
+- [Meet Mary and David]({{SITE_URL}}/about/founders)
+- [Veteran-owned]({{SITE_URL}}/about/veteran-owned)
+
+## Start here
+
+- [Services]({{SITE_URL}}/services)
+- [Frequently asked questions]({{SITE_URL}}/about/faq)
+- [Our approach]({{SITE_URL}}/about/philosophy)
+- [Contact and booking]({{SITE_URL}}/contact)
+- [Testimonials]({{SITE_URL}}/about/testimonials): feedback about books, courses and consulting; not a source of an aggregate business star rating.
+
+## Free resources
+
+- [Blog]({{SITE_URL}}/blog): practical marketing and business guidance.
+- [Free assessments guide]({{SITE_URL}}/resources/assessments): choose a tool, understand the findings and plan a useful next step.
+- [LocalPromoVault guide]({{SITE_URL}}/resources/marketing-resources): free marketing resources and assessment tools.
+- [The Next Level community guide]({{SITE_URL}}/resources/skool-community): free Skool community for practical AI and marketing learning.
+- [Books from the founders]({{SITE_URL}}/articles/books)
+
+## Optional
+
+- [Privacy and cookie choices]({{SITE_URL}}/privacy)
+- [Website terms]({{SITE_URL}}/terms)
+
+This file is a public, human-readable discovery guide. It grants no account access and does not replace robots.txt, authentication or the full website content. Published program scope, fees and support are agreed with David before an engagement.

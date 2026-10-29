@@ -3,6 +3,7 @@ import path from 'node:path';
 import * as cheerio from 'cheerio';
 import { writeText } from './write-text.mjs';
 import { applySiteShell, retired } from './site-shell.mjs';
+import {serviceNames,audience,writeDiscovery} from './discovery.mjs';
 
 export const seo = JSON.parse(fs.readFileSync(new URL('../content/seo.json', import.meta.url), 'utf8'));
 export const siteUrl = seo.siteUrl.replace(/\/$/, '');
@@ -82,11 +83,13 @@ export function applySeo(files, articles) {
       }
     });
     const organization = {
-      '@type':'Organization','@id':`${siteUrl}/#organization`,name:'Strategic Marketing Advisors, LLC',url:`${siteUrl}/`,
+      '@type':'Organization','@id':`${siteUrl}/#organization`,name:'Strategic Marketing Advisors',legalName:'Strategic Marketing Advisors, LLC',alternateName:'SMA',foundingDate:'2004',url:`${siteUrl}/`,
       description:'Founder-led AI Voice Agent and VedaKosa business system consulting from Cashiers, North Carolina, with independent AI Visibility assessment and implementation services.',
-      logo:absolute('assets/logo.svg'),image:absolute('assets/images/david-and-mary-life.webp'),telephone:'+1-877-355-8745',email:'hello@strategicmarketingadvisors.com',
+      logo:{'@type':'ImageObject',url:absolute('assets/logo.png'),width:1200,height:360},image:absolute('assets/images/david-and-mary-life.webp'),telephone:'+1-877-355-8745',email:'hello@strategicmarketingadvisors.com',
       address:{'@type':'PostalAddress',postOfficeBoxNumber:'2534',addressLocality:'Cashiers',addressRegion:'NC',postalCode:'28717',addressCountry:'US'},
       areaServed:{'@type':'Country',name:'United States'},
+      sameAs:['https://www.facebook.com/strategicmarketingadvisors'],
+      contactPoint:[{'@type':'ContactPoint',contactType:'sales',telephone:'+1-877-355-8745',email:'hello@strategicmarketingadvisors.com',areaServed:'US',availableLanguage:'English',hoursAvailable:{'@type':'OpeningHoursSpecification',dayOfWeek:['Monday','Tuesday','Wednesday','Thursday','Friday'],opens:'09:00',closes:'17:00'}}],
       founder:[{'@type':'Person',name:'Mary Eule Scarborough',url:absolute('/about/founders')},{'@type':'Person',name:'David A. Scarborough',url:absolute('/about/founders')}]
     };
     const pageType=relative==='contact.html'?'ContactPage':relative==='about.html'?'AboutPage':relative==='about/faq.html'?'FAQPage':'WebPage';
@@ -99,7 +102,7 @@ export function applySeo(files, articles) {
       crumbs.push({name:plain($('h1').first().html()),item:url});
       graph.push({'@type':'BreadcrumbList',itemListElement:crumbs.map((c,i)=>({'@type':'ListItem',position:i+1,...c}))});
     }
-    if(relative.startsWith('services/')) graph.push({'@type':'Service','@id':`${url}#service`,name:plain($('.phero .kicker').first().html())||$('h1').text(),description,url,provider:{'@id':organization['@id']},areaServed:{'@type':'Country',name:'United States'}});
+    if(relative.startsWith('services/')) graph.push({'@type':'Service','@id':`${url}#service`,name:serviceNames[relative]||$('h1').text(),description,url,provider:{'@id':organization['@id']},areaServed:{'@type':'Country',name:'United States'},audience:{'@type':'BusinessAudience',audienceType:audience}});
     if(article){
       graph.push({'@type':'BlogPosting',headline:article.title,description:article.description,image,url,mainEntityOfPage:{'@id':`${url}#webpage`},datePublished:article.date,dateModified:article.modified||article.date,
         author:article.authorType==='Organization'?{'@id':organization['@id']}:{'@type':'Person',name:article.author,url:absolute('/about/founders')},publisher:{'@id':organization['@id']}});
@@ -108,7 +111,7 @@ export function applySeo(files, articles) {
     if(!utility)$('head').append(`<script type="application/ld+json">${JSON.stringify({'@context':'https://schema.org','@graph':graph}).replace(/</g,'\\u003c')}</script>`);
     writeText(file,$.html());
   }
-  writeText(path.join(root,'robots.txt'),`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /dashboard\nDisallow: /api/\nDisallow: /studio\nDisallow: /static/\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
+  writeDiscovery(siteUrl);
   const admin='admin/index.html';
   if(fs.existsSync(admin)){
     const $=cheerio.load(fs.readFileSync(admin,'utf8'));
